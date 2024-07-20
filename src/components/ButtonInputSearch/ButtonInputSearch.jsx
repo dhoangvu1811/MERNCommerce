@@ -1,6 +1,7 @@
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
 import React from 'react';
+import InputComponent from '../InputComponent/InputComponent';
+import ButtonComponent from '../ButtonComponent/ButtonComponent';
 
 const ButtonInputSearch = (props) => {
     const {
@@ -10,20 +11,21 @@ const ButtonInputSearch = (props) => {
         backgroundColorInput,
         colorButton,
         backgroundColorButton,
+        bordered,
     } = props;
     return (
         <div style={{ display: 'flex' }}>
-            <Input
+            <InputComponent
                 style={{
                     borderTopRightRadius: '0',
                     borderBottomRightRadius: '0',
                     backgroundColor: backgroundColorInput,
                 }}
-                variant='borderless'
+                bordered={bordered}
                 size={size}
                 placeholder={placeholder}
             />
-            <Button
+            <ButtonComponent
                 style={{
                     borderTopLeftRadius: '0',
                     borderBottomLeftRadius: '0',
@@ -33,9 +35,8 @@ const ButtonInputSearch = (props) => {
                 }}
                 size={size}
                 icon={<SearchOutlined />}
-            >
-                {textButton}
-            </Button>
+                textButton={textButton}
+            />
         </div>
     );
 };

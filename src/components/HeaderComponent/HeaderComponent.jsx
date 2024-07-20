@@ -16,7 +16,7 @@ import ButtonInputSearch from '../ButtonInputSearch/ButtonInputSearch';
 const HeaderComponent = () => {
     return (
         <div>
-            <WrapperHeader gutter={16}>
+            <WrapperHeader>
                 <Col span={6}>
                     <WrapperTextHeader>THUCTAPTHUCTE</WrapperTextHeader>
                 </Col>
@@ -34,6 +34,7 @@ const HeaderComponent = () => {
                         backgroundColorInput='#fff'
                         backgroundColorButton='#0f60b8'
                         colorButton='#fff'
+                        bordered={false}
                     />
                 </Col>
                 <Col span={6} style={{ display: 'flex', gap: '20px' }}>
