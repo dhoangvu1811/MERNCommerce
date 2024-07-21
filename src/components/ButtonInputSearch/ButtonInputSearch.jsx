@@ -16,7 +16,7 @@ const ButtonInputSearch = (props) => {
     return (
         <div style={{ display: 'flex' }}>
             <InputComponent
-                style={{
+                styleInput={{
                     borderTopRightRadius: '0',
                     borderBottomRightRadius: '0',
                     backgroundColor: backgroundColorInput,
@@ -26,7 +26,7 @@ const ButtonInputSearch = (props) => {
                 placeholder={placeholder}
             />
             <ButtonComponent
-                style={{
+                styleButton={{
                     borderTopLeftRadius: '0',
                     borderBottomLeftRadius: '0',
                     border: 'none',

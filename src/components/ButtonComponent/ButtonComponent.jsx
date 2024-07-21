@@ -3,16 +3,15 @@ import React from 'react';
 
 const ButtonComponent = ({
     size,
-    backgroundColorButton,
-    colorButton,
     textButton,
     icon,
-    style,
+    styleButton,
+    styleTextButton,
     ...rests
 }) => {
     return (
-        <Button style={style} size={size} icon={icon} {...rests}>
-            {textButton}
+        <Button style={styleButton} size={size} icon={icon} {...rests}>
+            <span style={styleTextButton}>{textButton}</span>
         </Button>
     );
 };
