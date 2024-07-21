@@ -15,7 +15,7 @@ const HomePage = () => {
     const arr = ['TV', 'Tu Lanh', 'Laptop'];
     return (
         <>
-            <div style={{ padding: '0 120px' }}>
+            <div style={{ width: '1270px', margin: '0 auto' }}>
                 <WrapperTypeProduct>
                     {arr.map((item, index) => {
                         return <TypeProductComponent key={index} name={item} />;
@@ -23,40 +23,45 @@ const HomePage = () => {
                 </WrapperTypeProduct>
             </div>
             <div
-                id='container'
-                style={{
-                    backgroundColor: '#efefef',
-                    padding: '0 120px',
-                    height: '1000px',
-                }}
+                className='body'
+                style={{ width: '100%', background: '#efefef' }}
             >
-                <SliderComponent arrImages={[hinh1, hinh2, hinh3, hinh4]} />
-                <WrapperProducts>
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                    <CardComponent />
-                </WrapperProducts>
                 <div
+                    id='container'
                     style={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        marginTop: '15px',
+                        height: '1000px',
+                        width: '1270px',
+                        margin: '0 auto',
                     }}
                 >
-                    <WrapperButtonMore
-                        textButton='Xem thêm'
-                        styleButton={{
-                            border: '1px solid rgb(11,116,229)',
-                            color: 'rgb(11,116,229)',
-                            width: '240px',
-                            height: '38px',
+                    <SliderComponent arrImages={[hinh1, hinh2, hinh3, hinh4]} />
+                    <WrapperProducts>
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                        <CardComponent />
+                    </WrapperProducts>
+                    <div
+                        style={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: '10px',
                         }}
-                        styleTextButton={{ fontWeight: 500 }}
-                    />
+                    >
+                        <WrapperButtonMore
+                            textButton='Xem thêm'
+                            styleButton={{
+                                border: '1px solid rgb(11,116,229)',
+                                color: 'rgb(11,116,229)',
+                                width: '240px',
+                                height: '38px',
+                            }}
+                            styleTextButton={{ fontWeight: 500 }}
+                        />
+                    </div>
                 </div>
             </div>
         </>

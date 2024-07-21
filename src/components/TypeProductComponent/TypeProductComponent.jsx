@@ -1,7 +1,7 @@
 import React from 'react';
 
 const TypeProductComponent = ({ name }) => {
-    return <div>{name}</div>;
+    return <div style={{ padding: '0 10px' }}>{name}</div>;
 };
 
 export default TypeProductComponent;
