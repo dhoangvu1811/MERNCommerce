@@ -25,6 +25,7 @@ export const WrapperTextHeaderSmall = styled.span`
     font-size: 12px;
     color: #fff;
     white-space: nowrap;
+    cursor: pointer;
 `;
 export const WrapperIconHeader = styled.span`
     font-size: 30px;

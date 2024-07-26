@@ -70,3 +70,7 @@ export const WrapperContainerRight = styled.div`
         font-weight: 500;
     }
 `;
+export const WrapperMessageERR = styled.span`
+    color: red;
+    font-size: 1.8rem;
+`;

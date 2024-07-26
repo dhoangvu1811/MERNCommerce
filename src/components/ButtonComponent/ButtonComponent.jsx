@@ -3,6 +3,7 @@ import React from 'react';
 
 const ButtonComponent = ({
     size,
+    disabled,
     textButton,
     icon,
     styleButton,
@@ -10,7 +11,15 @@ const ButtonComponent = ({
     ...rests
 }) => {
     return (
-        <Button style={styleButton} size={size} icon={icon} {...rests}>
+        <Button
+            style={{
+                ...styleButton,
+                background: disabled ? '#ccc' : styleButton.background,
+            }}
+            size={size}
+            icon={icon}
+            {...rests}
+        >
             <span style={styleTextButton}>{textButton}</span>
         </Button>
     );
