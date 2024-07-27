@@ -43,7 +43,7 @@ const SignInPage = () => {
     // Hook gọi api đăng nhập user từ dữ liệu data gửi lên server (email, password) từ UserService
     const mutation = useMutationHook((data) => UserService.loginUser(data));
     const { data, isPending, isSuccess, isError } = mutation;
-    console.log('mutation', mutation);
+    // console.log('mutation', mutation);
 
     useEffect(() => {
         if (isSuccess) {
@@ -53,7 +53,10 @@ const SignInPage = () => {
             }, 1000); // Độ trễ 1 giây trước khi chuyển trang
 
             // Lưu access_token vào localStorage
-            localStorage.setItem('access_token', data?.access_token);
+            localStorage.setItem(
+                'access_token',
+                JSON.stringify(data?.access_token)
+            );
             if (data?.access_token) {
                 // giải mã token
                 const decoded = jwtDecode(data?.access_token);

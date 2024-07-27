@@ -1,9 +1,54 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes } from './routes';
 import DefaultComponent from './components/DefaultComponent/DefaultComponent';
+import { isJsonString } from './until';
+import { jwtDecode } from 'jwt-decode';
+import { useDispatch } from 'react-redux';
+import * as UserService from './services/UserService';
+import { updateUser } from './redux/slices/userSlice';
 
 function App() {
+    const dispatch = useDispatch();
+    // Hook useEffect để lấy thông tin user từ localStorage
+    useEffect(() => {
+        const { decoded, accessTokenStorage } = handleDecoded();
+        if (decoded?.id) {
+            handleGetDetailsUser(decoded?.id, accessTokenStorage);
+        }
+    }, []);
+
+    const handleDecoded = () => {
+        let accessTokenStorage = localStorage.getItem('access_token');
+        let decoded = {};
+        if (accessTokenStorage && isJsonString(accessTokenStorage)) {
+            accessTokenStorage = JSON.parse(accessTokenStorage);
+            decoded = jwtDecode(accessTokenStorage);
+        }
+        return { decoded, accessTokenStorage };
+    };
+
+    // Add a request interceptor
+    UserService.axiosJWT.interceptors.request.use(
+        async function (config) {
+            const currentTime = new Date();
+            const { decoded } = handleDecoded();
+            if (decoded?.exp < currentTime.getTime() / 1000) {
+                const data = await UserService.refreshToken();
+                config.headers['token'] = `Bearer ${data?.access_token}`;
+            }
+            return config;
+        },
+        function (error) {
+            return Promise.reject(error);
+        }
+    );
+
+    // Hàm lấy thông tin user
+    const handleGetDetailsUser = async (id, access_token) => {
+        const res = await UserService.getDetailsUser(id, access_token);
+        dispatch(updateUser({ ...res?.data, access_token: access_token }));
+    };
     return (
         <div>
             <Router>

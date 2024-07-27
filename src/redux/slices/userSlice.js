@@ -14,7 +14,7 @@ export const userSlice = createSlice({
     reducers: {
         updateUser: (state, action) => {
             const { name, email, access_token } = action.payload;
-            console.log('action.payload', action.payload);
+            // console.log('action.payload', action.payload);
 
             // Cập nhật thông tin user vào state global
             state.name = name || email;
