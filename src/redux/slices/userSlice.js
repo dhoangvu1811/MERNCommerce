@@ -21,10 +21,16 @@ export const userSlice = createSlice({
             state.email = email;
             state.access_token = access_token;
         },
+        logoutUser: (state) => {
+            // Xóa thông tin user khỏi state global
+            state.name = '';
+            state.email = '';
+            state.access_token = '';
+        },
     },
 });
 
 // Export action để dispatch
-export const { updateUser } = userSlice.actions;
+export const { updateUser, logoutUser } = userSlice.actions;
 
 export default userSlice.reducer;
