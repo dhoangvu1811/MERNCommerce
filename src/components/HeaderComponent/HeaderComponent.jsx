@@ -14,8 +14,13 @@ import {
 } from '@ant-design/icons';
 import ButtonInputSearch from '../ButtonInputSearch/ButtonInputSearch';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 const HeaderComponent = () => {
     const navigate = useNavigate();
+
+    // Lấy dữ liệu user từ store global
+    const user = useSelector((state) => state.user);
+
     const handleNavigateLogin = () => {
         navigate('/sign-in');
     };
@@ -55,19 +60,35 @@ const HeaderComponent = () => {
                         <WrapperIconHeader>
                             <UserOutlined style={{ fontSize: '3rem' }} />
                         </WrapperIconHeader>
-                        <div>
-                            <WrapperTextHeaderSmall
-                                onClick={handleNavigateLogin}
-                            >
-                                Đăng nhập/Đăng ký
-                            </WrapperTextHeaderSmall>
+                        {user?.name ? (
                             <div>
-                                <WrapperTextHeaderSmall>
-                                    Tài khoản
+                                <WrapperTextHeaderSmall
+                                // onClick={handleNavigateLogin}
+                                >
+                                    Đăng xuất
                                 </WrapperTextHeaderSmall>
-                                <CaretDownOutlined />
+                                <div>
+                                    <WrapperTextHeaderSmall>
+                                        {user?.name}
+                                    </WrapperTextHeaderSmall>
+                                    <CaretDownOutlined />
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div>
+                                <WrapperTextHeaderSmall
+                                    onClick={handleNavigateLogin}
+                                >
+                                    Đăng nhập/Đăng ký
+                                </WrapperTextHeaderSmall>
+                                <div>
+                                    <WrapperTextHeaderSmall>
+                                        Tài khoản
+                                    </WrapperTextHeaderSmall>
+                                    <CaretDownOutlined />
+                                </div>
+                            </div>
+                        )}
                     </WrapperHeaderAccount>
                     <div>
                         <Badge count={4} size='small'>
