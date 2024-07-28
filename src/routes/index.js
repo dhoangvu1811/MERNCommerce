@@ -7,6 +7,7 @@ import TypeProductPage from '../pages/TypeProductPage/TypeProductPage';
 import SignUpPage from '../pages/SignUpPage/SignUpPage';
 import SignInPage from '../pages/SignInPage/SignInPage';
 import ProductDetailPage from '../pages/ProductDetailPage/ProductDetailPage';
+import ProfilePage from '../pages/Profile/ProfilePage';
 
 export const routes = [
     {
@@ -38,6 +39,10 @@ export const routes = [
     {
         path: '/product-detail',
         component: ProductDetailPage,
+    },
+    {
+        path: '/profile-user',
+        component: ProfilePage,
     },
     {
         path: '*',

@@ -50,3 +50,17 @@ export const logoutUser = async () => {
     );
     return res.data;
 };
+
+// Cập nhật thông tin user từ id và dữ liệu data gửi lên server (name, email, phone, address, avatar)
+export const updateUser = async (id, access_token, data) => {
+    const res = await axiosJWT.put(
+        `${process.env.REACT_APP_API_URL}/user/update_user/${id}`,
+        data,
+        {
+            headers: {
+                token: `Bearer ${access_token}`,
+            },
+        }
+    );
+    return res.data;
+};
