@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge, Col, message, Popover } from 'antd';
 import {
     WrapperContentPopup,
@@ -22,7 +22,7 @@ import { logoutUser } from '../../redux/slices/userSlice';
 const HeaderComponent = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    const [userAvatar, setUserAvatar] = useState('');
     // Hook message để hiển thị thông báo
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -34,6 +34,10 @@ const HeaderComponent = () => {
     };
     // Lấy dữ liệu user từ store global
     const user = useSelector((state) => state.user);
+
+    useEffect(() => {
+        setUserAvatar(user?.avatar);
+    }, [user?.avatar]);
 
     const handleNavigateLogin = () => {
         navigate('/sign-in');
@@ -94,9 +98,24 @@ const HeaderComponent = () => {
                         }}
                     >
                         <WrapperHeaderAccount>
-                            <WrapperIconHeader>
-                                <UserOutlined style={{ fontSize: '3rem' }} />
-                            </WrapperIconHeader>
+                            {userAvatar ? (
+                                <img
+                                    src={userAvatar}
+                                    alt='avatar'
+                                    style={{
+                                        height: '30px',
+                                        width: '30px',
+                                        borderRadius: '50%',
+                                        objectFit: 'cover',
+                                    }}
+                                />
+                            ) : (
+                                <WrapperIconHeader>
+                                    <UserOutlined
+                                        style={{ fontSize: '3rem' }}
+                                    />
+                                </WrapperIconHeader>
+                            )}
                             {user?.access_token ? (
                                 <div>
                                     <Popover

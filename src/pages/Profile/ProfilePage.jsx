@@ -4,14 +4,17 @@ import {
     WrapperContentProfile,
     WrapperLabel,
     WrapperInput,
+    WrapperUploadFile,
 } from './ProfileStyle';
 import InputForm from '../../components/InputForm/InputForm';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { useSelector } from 'react-redux';
 import * as UserService from '../../services/UserService.js';
 import { useMutationHook } from '../../hooks/useMutationHook.js';
-import { message } from 'antd';
+import { Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { UploadOutlined } from '@ant-design/icons';
+import { getBase64 } from '../../until.js';
 
 const ProfilePage = () => {
     const user = useSelector((state) => state.user);
@@ -20,7 +23,6 @@ const ProfilePage = () => {
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [avatar, setAvatar] = useState('');
-    const navigate = useNavigate();
 
     const [messageApi, contextHolder] = message.useMessage();
     // Hàm thông báo
@@ -43,7 +45,6 @@ const ProfilePage = () => {
         UserService.updateUser(id, access_token, rests);
     });
     const { data, isPending, isSuccess, isError } = mutation;
-    console.log('mutation', mutation);
 
     useEffect(() => {
         setEmail(user?.email);
@@ -76,9 +77,16 @@ const ProfilePage = () => {
     const handleOnChangePhone = (e) => {
         setPhone(e.target.value);
     };
-    const handleOnChangeAvatar = (e) => {
-        setAvatar(e.target.value);
+
+    // Hàm xử lý khi thay đổi avatar user
+    const handleOnChangeAvatar = async ({ fileList }) => {
+        const file = fileList[0];
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+        setAvatar(file.preview);
     };
+
     const handleUpdate = () => {
         mutation.mutate({
             id: user?.id,
@@ -100,28 +108,26 @@ const ProfilePage = () => {
                         <WrapperLabel htmlFor='avatar'>
                             Hình đại diện
                         </WrapperLabel>
-                        <InputForm
-                            value={avatar}
+                        <WrapperUploadFile
+                            maxCount={1}
                             onChange={handleOnChangeAvatar}
-                            id='avatar'
-                            style={{ width: '300px' }}
-                        />
-                        <ButtonComponent
-                            onClick={handleUpdate}
-                            size={40}
-                            styleButton={{
-                                height: '30px',
-                                width: 'fit-content',
-                                border: '1px solid rgb(26, 148, 255)',
-                                background: 'none',
-                            }}
-                            textButton={'Cập nhật'}
-                            styleTextButton={{
-                                color: 'rgb(26, 148, 255)',
-                                fontsize: '1.5rem',
-                                fontWeight: '600',
-                            }}
-                        />
+                        >
+                            <Button icon={<UploadOutlined />}>
+                                Select File
+                            </Button>
+                        </WrapperUploadFile>
+                        {avatar && (
+                            <img
+                                src={avatar}
+                                alt='avatar'
+                                style={{
+                                    height: '60px',
+                                    width: '60px',
+                                    borderRadius: '50%',
+                                    objectFit: 'cover',
+                                }}
+                            />
+                        )}
                     </WrapperInput>
                     <WrapperInput>
                         <WrapperLabel htmlFor='name'>Họ và tên</WrapperLabel>
@@ -165,6 +171,23 @@ const ProfilePage = () => {
                             placeholder={'0123423687'}
                         />
                     </WrapperInput>
+                    <ButtonComponent
+                        onClick={handleUpdate}
+                        size={40}
+                        styleButton={{
+                            height: '30px',
+                            width: 'fit-content',
+                            border: '1px solid rgb(26, 148, 255)',
+                            background: 'none',
+                            margin: '0 auto',
+                        }}
+                        textButton={'Cập nhật'}
+                        styleTextButton={{
+                            color: 'rgb(26, 148, 255)',
+                            fontsize: '1.5rem',
+                            fontWeight: '600',
+                        }}
+                    />
                 </WrapperContentProfile>
             </div>
         </>
