@@ -1,9 +1,9 @@
 import { Spin } from 'antd';
 import React from 'react';
 
-const LoadingComponent = ({ children, isPending, delay = 200 }) => {
+const LoadingComponent = ({ children, isPending, delay = 500 }) => {
     return (
-        <Spin spinning={isPending} delay={500}>
+        <Spin spinning={isPending} delay={delay}>
             {children}
         </Spin>
     );

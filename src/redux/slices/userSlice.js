@@ -9,6 +9,7 @@ const initialState = {
     address: '',
     avatar: '',
     access_token: '',
+    isAdmin: false,
 };
 
 // Slice là nơi chứa các reducers và action creators
@@ -25,6 +26,7 @@ export const userSlice = createSlice({
                 avatar = '',
                 _id = '',
                 access_token = '',
+                isAdmin,
             } = action.payload;
             // console.log('action.payload', action.payload);
 
@@ -36,6 +38,7 @@ export const userSlice = createSlice({
             state.avatar = avatar;
             state.id = _id;
             state.access_token = access_token;
+            state.isAdmin = isAdmin;
         },
         logoutUser: (state) => {
             // Xóa thông tin user khỏi state global
@@ -46,6 +49,7 @@ export const userSlice = createSlice({
             state.avatar = '';
             state.id = '';
             state.access_token = '';
+            state.isAdmin = false;
         },
     },
 });

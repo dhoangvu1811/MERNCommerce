@@ -8,6 +8,7 @@ import SignUpPage from '../pages/SignUpPage/SignUpPage';
 import SignInPage from '../pages/SignInPage/SignInPage';
 import ProductDetailPage from '../pages/ProductDetailPage/ProductDetailPage';
 import ProfilePage from '../pages/Profile/ProfilePage';
+import AdminPage from '../pages/AdminPage/AdminPage';
 
 export const routes = [
     {
@@ -43,6 +44,12 @@ export const routes = [
     {
         path: '/profile-user',
         component: ProfilePage,
+    },
+    {
+        path: '/system/admin',
+        component: AdminPage,
+        layout: NotHeaderComponent,
+        isAdmin: true,
     },
     {
         path: '*',

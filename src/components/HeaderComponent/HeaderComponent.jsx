@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as UserService from '../../services/UserService';
 import { logoutUser } from '../../redux/slices/userSlice';
 
-const HeaderComponent = () => {
+const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [userAvatar, setUserAvatar] = useState('');
@@ -58,6 +58,12 @@ const HeaderComponent = () => {
             <WrapperContentPopup onClick={() => navigate('/profile-user')}>
                 Thông tin người dùng
             </WrapperContentPopup>
+
+            {user?.isAdmin && (
+                <WrapperContentPopup onClick={() => navigate('/system/admin')}>
+                    Quản lý hệ thống
+                </WrapperContentPopup>
+            )}
             <WrapperContentPopup onClick={handleLogout}>
                 Đăng xuất
             </WrapperContentPopup>
@@ -74,21 +80,30 @@ const HeaderComponent = () => {
                     justifyContent: 'center',
                 }}
             >
-                <WrapperHeader>
+                <WrapperHeader
+                    style={{
+                        justifyContent:
+                            isHiddenSearch && isHiddenCart
+                                ? 'space-between'
+                                : 'unset',
+                    }}
+                >
                     <Col span={5}>
                         <WrapperTextHeader>THUCTAPTHUCTE</WrapperTextHeader>
                     </Col>
-                    <Col span={13}>
-                        <ButtonInputSearch
-                            size='large'
-                            textButton='Tìm kiếm'
-                            placeholder='Tìm sản phẩm mong muốn...'
-                            backgroundColorInput='#fff'
-                            backgroundColorButton='#0f60b8'
-                            colorButton='#fff'
-                            bordered={false}
-                        />
-                    </Col>
+                    {!isHiddenSearch && (
+                        <Col span={13}>
+                            <ButtonInputSearch
+                                size='large'
+                                textButton='Tìm kiếm'
+                                placeholder='Tìm sản phẩm mong muốn...'
+                                backgroundColorInput='#fff'
+                                backgroundColorButton='#0f60b8'
+                                colorButton='#fff'
+                                bordered={false}
+                            />
+                        </Col>
+                    )}
                     <Col
                         span={6}
                         style={{
@@ -144,16 +159,18 @@ const HeaderComponent = () => {
                                 </div>
                             )}
                         </WrapperHeaderAccount>
-                        <div>
-                            <Badge count={4} size='small'>
-                                <WrapperIconHeader>
-                                    <ShoppingCartOutlined />
-                                </WrapperIconHeader>
-                            </Badge>
-                            <WrapperTextHeaderSmall>
-                                Giỏ hàng
-                            </WrapperTextHeaderSmall>
-                        </div>
+                        {!isHiddenCart && (
+                            <div>
+                                <Badge count={4} size='small'>
+                                    <WrapperIconHeader>
+                                        <ShoppingCartOutlined />
+                                    </WrapperIconHeader>
+                                </Badge>
+                                <WrapperTextHeaderSmall>
+                                    Giỏ hàng
+                                </WrapperTextHeaderSmall>
+                            </div>
+                        )}
                     </Col>
                 </WrapperHeader>
             </div>
