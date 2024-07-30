@@ -7,7 +7,7 @@ import TypeProductPage from '../pages/TypeProductPage/TypeProductPage';
 import SignUpPage from '../pages/SignUpPage/SignUpPage';
 import SignInPage from '../pages/SignInPage/SignInPage';
 import ProductDetailPage from '../pages/ProductDetailPage/ProductDetailPage';
-import ProfilePage from '../pages/Profile/ProfilePage';
+import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import AdminPage from '../pages/AdminPage/AdminPage';
 
 export const routes = [
