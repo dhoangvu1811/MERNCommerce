@@ -32,19 +32,22 @@ const ProfilePage = () => {
             content: 'Cập nhật thành công',
         });
     };
-    const error = () => {
+    const error = (mes = 'Cập nhật thất bại') => {
         messageApi.open({
             type: 'error',
-            content: 'Cập nhật thất bại',
+            content: mes,
         });
     };
 
     // Hook useMutationHook để cập nhật thông tin user
     const mutation = useMutationHook((data) => {
         const { id, access_token, ...rests } = data;
-        UserService.updateUser(id, access_token, rests);
+        const res = UserService.updateUser(id, access_token, rests);
+        return res;
     });
-    const { data, isPending, isSuccess, isError } = mutation;
+    const { data, isPending, isSuccess, isError, failureCount, failureReason } =
+        mutation;
+    console.log('mutation', mutation);
 
     useEffect(() => {
         setEmail(user?.email);
@@ -57,12 +60,11 @@ const ProfilePage = () => {
     useEffect(() => {
         if (isSuccess) {
             success();
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        }
-        if (isError) {
-            error();
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1000);
+        } else if (failureCount > 0) {
+            error(failureReason?.response?.data?.message);
         }
     }, [isSuccess, isError]);
     const handleOnChangeEmail = (e) => {

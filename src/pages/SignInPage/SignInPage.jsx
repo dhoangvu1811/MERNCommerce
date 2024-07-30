@@ -33,16 +33,17 @@ const SignInPage = () => {
             content: 'Đăng nhập thành công',
         });
     };
-    const error = () => {
+    const error = (mes = 'Đăng nhập thất bại') => {
         messageApi.open({
             type: 'error',
-            content: 'Đăng nhập thất bại',
+            content: mes,
         });
     };
 
     // Hook gọi api đăng nhập user từ dữ liệu data gửi lên server (email, password) từ UserService
     const mutation = useMutationHook((data) => UserService.loginUser(data));
-    const { data, isPending, isSuccess, isError } = mutation;
+    const { data, isPending, isSuccess, isError, failureCount, failureReason } =
+        mutation;
     // console.log('mutation', mutation);
 
     useEffect(() => {
@@ -67,8 +68,8 @@ const SignInPage = () => {
                     handleGetDetailsUser(decoded?.id, data?.access_token);
                 }
             }
-        } else if (isError) {
-            error();
+        } else if (failureCount > 0) {
+            error(failureReason?.response?.data?.message);
         }
     }, [isSuccess, isError]);
 

@@ -28,16 +28,17 @@ const SignUpPage = () => {
         });
     };
 
-    const error = () => {
+    const error = (mes = 'Đăng ký tài khoản thất bại') => {
         messageApi.open({
             type: 'error',
-            content: 'Đăng ký tài khoản thất bại',
+            content: mes,
         });
     };
 
     const mutation = useMutationHook((data) => UserService.signupUser(data));
-    console.log(mutation);
-    const { data, isPending, isSuccess, isError, failureReason } = mutation;
+    console.log('mutation', mutation);
+    const { data, isPending, isSuccess, isError, failureReason, failureCount } =
+        mutation;
 
     useEffect(() => {
         if (isSuccess) {
@@ -45,8 +46,8 @@ const SignUpPage = () => {
             setTimeout(() => {
                 handleNavigateSignIn();
             }, 1000); // Độ trễ 1 giây trước khi chuyển trang
-        } else if (isError) {
-            error();
+        } else if (failureCount > 0) {
+            error(failureReason?.response?.data?.message);
         }
     }, [isSuccess, isError]);
 
