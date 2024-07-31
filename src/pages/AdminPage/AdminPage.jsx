@@ -54,7 +54,7 @@ const AdminPage = () => {
                     defaultSelectedKeys={['1']}
                     onClick={handleOnClick}
                     style={{
-                        boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
+                        boxShadow: '5px 0 15px -5px rgba(0, 0, 0, 0.35)',
                         width: '256px',
                         height: '100vh',
                     }}
