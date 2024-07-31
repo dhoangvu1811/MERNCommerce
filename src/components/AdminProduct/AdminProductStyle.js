@@ -14,11 +14,6 @@ export const WrapperForm = styled(Form)`
         align-items: center;
     }
 `;
-export const WrapperModal = styled(Modal)`
-    & .ant-modal-footer {
-        display: none;
-    }
-`;
 export const WrapperUploadFile = styled(Upload)`
     margin-right: 30px;
     & .ant-upload-list-item-container {

@@ -4,7 +4,7 @@ import {
     PlusCircleFilled,
     UploadOutlined,
 } from '@ant-design/icons';
-import { Button, Form, message } from 'antd';
+import { Button, Form, message, Modal } from 'antd';
 import {
     WrapperForm,
     WrapperHeader,
@@ -21,6 +21,7 @@ import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import { useQuery } from '@tanstack/react-query';
 import DrawerComponent from '../DrawerComponent/DrawerComponent';
 import { useSelector } from 'react-redux';
+import ModalComponent from '../ModalComponent/ModalComponent';
 
 const AdminProduct = () => {
     const user = useSelector((state) => state.user);
@@ -30,6 +31,7 @@ const AdminProduct = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const [form] = Form.useForm();
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+    const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
     const [stateProduct, setStateProduct] = useState({
         name: '',
         type: '',
@@ -72,29 +74,34 @@ const AdminProduct = () => {
         setIsPendingUpdate(false);
         return res;
     };
-    const handleDetailsProduct = () => {
+    const handleDelete = (e) => {
+        setIsModalOpenDelete(true);
+    };
+    const handleDetailsProduct = (e) => {
         if (rowSelected) {
             setIsPendingUpdate(true);
             setIsOpenDrawer(true);
             fetchGetDetailsProduct(rowSelected);
         }
     };
+    console.log('rowSelected', rowSelected);
     const renderAction = () => {
         return (
-            <div style={{ display: 'flex', cursor: 'pointer' }}>
-                <DeleteOutlined />
+            <div style={{ display: 'flex', gap: '20px' }}>
+                <DeleteOutlined onClick={handleDelete} />
                 <EditOutlined onClick={handleDetailsProduct} />
             </div>
         );
     };
 
     // Lấy dữ liệu sản phẩm từ api để hiển thị lên bảng
-    const { isLoading: isLoadingProduct, data: products } = useQuery({
+    const queryProduct = useQuery({
         queryKey: ['getAllProduct'],
         queryFn: getAllProduct,
         retry: 1,
         retryDelay: 1000,
     });
+    const { isLoading: isLoadingProduct, data: products } = queryProduct;
     const columnTable = [
         {
             title: 'Name',
@@ -164,7 +171,21 @@ const AdminProduct = () => {
         failureReason: failureReasonUpdate,
         failureCount: failureCountUpdate,
     } = mutationUpdate;
-    console.log('mutationUpdate', mutationUpdate);
+
+    // Hàm cập xóa sản phẩm
+    const mutationDelete = useMutationHook((data) => {
+        const { id, token } = data;
+        const res = ProductService.deleteProduct(id, token);
+        return res;
+    });
+    const {
+        data: dataDelete,
+        isPending: isPendingDeleteMutation,
+        isSuccess: isSuccessDelete,
+        isError: isErrorDelete,
+        failureReason: failureReasonDelete,
+        failureCount: failureCountDelete,
+    } = mutationDelete;
 
     // Hàm thông báo
     const success = (mes = 'Thành công') => {
@@ -180,6 +201,19 @@ const AdminProduct = () => {
         });
     };
 
+    const handleCancelDelete = () => {
+        setIsModalOpenDelete(false);
+    };
+    const handleDeleteProduct = () => {
+        mutationDelete.mutate(
+            { id: rowSelected, token: user?.access_token },
+            {
+                onSettled: () => {
+                    queryProduct.refetch();
+                },
+            }
+        );
+    };
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -195,14 +229,25 @@ const AdminProduct = () => {
         form.resetFields();
     };
     const onFinish = (values) => {
-        mutation.mutate(stateProduct);
+        mutation.mutate(stateProduct, {
+            onSettled: () => {
+                queryProduct.refetch();
+            },
+        });
     };
     const onUpdateProduct = (values) => {
-        mutationUpdate.mutate({
-            id: rowSelected,
-            token: user?.access_token,
-            ...stateProductDetails,
-        });
+        mutationUpdate.mutate(
+            {
+                id: rowSelected,
+                token: user?.access_token,
+                ...stateProductDetails,
+            },
+            {
+                onSettled: () => {
+                    queryProduct.refetch();
+                },
+            }
+        );
     };
 
     const handleOnChange = async (e) => {
@@ -258,6 +303,16 @@ const AdminProduct = () => {
         }
     }, [isSuccessUpdate, isErrorUpdate]);
 
+    // Hàm xử lý khi xoá sản phẩm thành công hoặc thất bại
+    useEffect(() => {
+        if (isSuccessDelete && dataDelete?.status === 'success') {
+            success('Xoá sản phẩm thành công');
+            handleCancelDelete();
+        } else if (failureCountDelete > 0) {
+            error(failureReasonDelete?.response?.data.message);
+        }
+    }, [isSuccessDelete, isErrorDelete]);
+
     // Hàm xử lý khi click vào 1 dòng trong bảng
     useEffect(() => {
         if (rowSelected) {
@@ -265,6 +320,7 @@ const AdminProduct = () => {
         }
     }, [rowSelected]);
 
+    //hàm set giá trị cho form khi click vào 1 dòng trong bảng
     useEffect(() => {
         form.setFieldsValue(stateProductDetails);
     }, [form, stateProductDetails]);
@@ -299,7 +355,8 @@ const AdminProduct = () => {
                     }}
                 />
             </div>
-            <WrapperModal
+            <ModalComponent
+                footer={null}
                 title='Thêm sản phẩm'
                 open={isModalOpen}
                 onCancel={handleCancel}
@@ -464,7 +521,8 @@ const AdminProduct = () => {
                         </WrapperForm.Item>
                     </WrapperForm>
                 </LoadingComponent>
-            </WrapperModal>
+            </ModalComponent>
+
             <DrawerComponent
                 title='Chi tiết sản phẩm'
                 isOpen={isOpenDrawer}
@@ -634,6 +692,17 @@ const AdminProduct = () => {
                     </WrapperForm>
                 </LoadingComponent>
             </DrawerComponent>
+
+            <ModalComponent
+                title='Xoá sản phẩm'
+                open={isModalOpenDelete}
+                onCancel={handleCancelDelete}
+                onOk={handleDeleteProduct}
+            >
+                <LoadingComponent isPending={isPendingDeleteMutation}>
+                    <div>Bạn có muốn xoá sản phẩm này không?</div>
+                </LoadingComponent>
+            </ModalComponent>
         </div>
     );
 };
