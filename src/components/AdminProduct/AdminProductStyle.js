@@ -1,4 +1,4 @@
-import { Form, Modal, Upload } from 'antd';
+import { Form, Upload } from 'antd';
 import styled from 'styled-components';
 
 export const WrapperHeader = styled.h1`
@@ -9,7 +9,7 @@ export const WrapperForm = styled(Form)`
     & .ant-form-item-label {
         text-align: left;
     }
-    & #basic_image {
+    & #DetailsProduct_image {
         display: flex;
         align-items: center;
     }

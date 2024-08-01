@@ -97,7 +97,7 @@ const ProfilePage = () => {
             name,
             address,
             phone,
-            avatar,
+            image: avatar,
         });
     };
     return (

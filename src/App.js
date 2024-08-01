@@ -53,7 +53,6 @@ function App() {
     // Hàm lấy thông tin user
     const handleGetDetailsUser = async (id, access_token) => {
         const res = await UserService.getDetailsUser(id, access_token);
-        // console.log('res', res);
         dispatch(updateUser({ ...res?.data, access_token: access_token }));
         setLoading(false);
     };

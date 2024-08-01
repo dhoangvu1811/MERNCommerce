@@ -5,11 +5,10 @@ import {
     SearchOutlined,
     UploadOutlined,
 } from '@ant-design/icons';
-import { Button, Form, Input, message, Modal, Space } from 'antd';
+import { Button, Form, Input, message, Space } from 'antd';
 import {
     WrapperForm,
     WrapperHeader,
-    WrapperModal,
     WrapperUploadFile,
 } from './AdminProductStyle';
 import TableComponent from '../TableComponent/TableComponent';
@@ -33,7 +32,8 @@ const AdminProduct = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [rowSelected, setRowSelected] = useState('');
     const [messageApi, contextHolder] = message.useMessage();
-    const [form] = Form.useForm();
+    const [formAdd] = Form.useForm();
+    const [formUpdate] = Form.useForm();
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
     const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
     const [stateProduct, setStateProduct] = useState({
@@ -376,11 +376,11 @@ const AdminProduct = () => {
     };
     const handleCancel = () => {
         setIsModalOpen(false);
-        form.resetFields();
+        formAdd.resetFields();
     };
     const handleCancelUpdate = () => {
         setIsOpenDrawer(false);
-        form.resetFields();
+        formUpdate.resetFields();
     };
     const onFinish = (values) => {
         mutation.mutate(stateProduct, {
@@ -476,8 +476,8 @@ const AdminProduct = () => {
 
     //hàm set giá trị cho form khi click vào 1 dòng trong bảng
     useEffect(() => {
-        form.setFieldsValue(stateProductDetails);
-    }, [form, stateProductDetails]);
+        formUpdate.setFieldsValue(stateProductDetails);
+    }, [formUpdate, stateProductDetails]);
     return (
         <div>
             {contextHolder}
@@ -518,8 +518,8 @@ const AdminProduct = () => {
             >
                 <LoadingComponent isPending={isPending}>
                     <WrapperForm
-                        form={form}
-                        name='Thêm sản phẩm'
+                        form={formAdd}
+                        name='AddProduct'
                         labelCol={{
                             span: 8,
                         }}
@@ -679,6 +679,7 @@ const AdminProduct = () => {
             </ModalComponent>
 
             <DrawerComponent
+                forceRender
                 title='Chi tiết sản phẩm'
                 isOpen={isOpenDrawer}
                 onClose={() => setIsOpenDrawer(false)}
@@ -688,8 +689,8 @@ const AdminProduct = () => {
                     isPending={isPendingUpdate || isPendingUpdateMutation}
                 >
                     <WrapperForm
-                        form={form}
-                        name='Chi tiết sản phẩm'
+                        form={formUpdate}
+                        name='DetailsProduct'
                         labelCol={{
                             span: 8,
                         }}

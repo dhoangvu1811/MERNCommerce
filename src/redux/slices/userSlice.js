@@ -23,7 +23,7 @@ export const userSlice = createSlice({
                 email = '',
                 phone = '',
                 address = '',
-                avatar = '',
+                image = '',
                 _id = '',
                 access_token = '',
                 isAdmin,
@@ -35,7 +35,7 @@ export const userSlice = createSlice({
             state.email = email;
             state.phone = phone;
             state.address = address;
-            state.avatar = avatar;
+            state.avatar = image;
             state.id = _id;
             state.access_token = access_token;
             state.isAdmin = isAdmin;
