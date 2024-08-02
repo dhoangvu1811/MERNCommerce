@@ -1,7 +1,8 @@
 import { Button, Table } from 'antd';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
 import ModalComponent from '../ModalComponent/ModalComponent';
+import { Excel } from 'antd-table-saveas-excel';
 
 const TableComponent = (props) => {
     const {
@@ -18,6 +19,12 @@ const TableComponent = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [rowSelectedKey, setrowSelectedKey] = useState([]);
 
+    // xóa cột action và sử dụng useMemo để chạy mỗi khi columns thay đổi
+    const newCloumns = useMemo(() => {
+        const arr = columns.filter((column) => column.dataIndex !== 'action');
+        return arr;
+    }, [columns]);
+
     // rowSelection object indicates the need for row selection
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -29,6 +36,19 @@ const TableComponent = (props) => {
         //     name: record.name,
         // }),
     };
+
+    // export excel
+    const handleExportExcel = () => {
+        const excel = new Excel();
+        excel
+            .addSheet('test')
+            .addColumns(newCloumns)
+            .addDataSource(data, {
+                str2Percent: true,
+            })
+            .saveAs('Excel.xlsx');
+    };
+
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -66,6 +86,9 @@ const TableComponent = (props) => {
                     </div>
                 </LoadingComponent>
             )}
+            <Button type='primary' onClick={handleExportExcel}>
+                Export Excel
+            </Button>
             <Table
                 rowSelection={{
                     type: selectionType,
