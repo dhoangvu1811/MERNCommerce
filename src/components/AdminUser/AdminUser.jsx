@@ -56,7 +56,7 @@ const AdminUser = () => {
 
     // Hàm lấy tất cả dữ liệu người dùng từ api
     const getAllUser = async () => {
-        const res = await UserService.getAllUser();
+        const res = await UserService.getAllUser(user?.access_token);
         return res;
     };
     // Hàm lấy chi tiết người dùng từ api
@@ -258,7 +258,6 @@ const AdminUser = () => {
                 isAdmin: user.isAdmin ? 'Admin' : 'User',
             };
         });
-    console.log('user', Users?.data);
 
     // Hàm thêm người dùng
     const mutation = useMutationHook((data) => {
@@ -298,6 +297,31 @@ const AdminUser = () => {
         failureCount: failureCountDelete,
     } = mutationDelete;
 
+    // Hàm cập xóa người dùng tuỳ chọn
+    const mutationDeleteManyUser = useMutationHook((data) => {
+        const { token, ...ids } = data;
+        const res = UserService.deleteManyUser(ids, token);
+        return res;
+    });
+    const {
+        data: dataDeleteManyUser,
+        isPending: isPendingDeleteMutationManyUser,
+        isSuccess: isSuccessDeleteManyUser,
+        isError: isErrorDeleteManyUser,
+        failureReason: failureReasonDeleteManyUser,
+        failureCount: failureCountDeleteManyUser,
+    } = mutationDeleteManyUser;
+
+    const handleDeleteManyUser = (ids) => {
+        mutationDeleteManyUser.mutate(
+            { ids: ids, token: user?.access_token },
+            {
+                onSettled: () => {
+                    queryUser.refetch();
+                },
+            }
+        );
+    };
     // Hàm thông báo
     const success = (mes = 'Thành công') => {
         messageApi.open({
@@ -425,6 +449,18 @@ const AdminUser = () => {
         }
     }, [isSuccessDelete, isErrorDelete]);
 
+    // Hàm xử lý khi xoá người dùng tuỳ chọn thành công hoặc thất bại
+    useEffect(() => {
+        if (
+            isSuccessDeleteManyUser &&
+            dataDeleteManyUser?.status === 'success'
+        ) {
+            success('Xoá người dùng tuỳ chọn thành công');
+        } else if (failureCountDeleteManyUser > 0) {
+            error(failureReasonDeleteManyUser?.response?.data.message);
+        }
+    }, [isSuccessDeleteManyUser, isErrorDeleteManyUser]);
+
     // Hàm xử lý khi click vào 1 dòng trong bảng
     useEffect(() => {
         if (rowSelected) {
@@ -465,6 +501,11 @@ const AdminUser = () => {
                             }, // click row
                         };
                     }}
+                    type='người dùng'
+                    handleDeleteManyUser={handleDeleteManyUser}
+                    isPendingDeleteMutationManyUser={
+                        isPendingDeleteMutationManyUser
+                    }
                 />
             </div>
             <ModalComponent

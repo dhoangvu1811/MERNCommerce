@@ -13,6 +13,10 @@ export const WrapperForm = styled(Form)`
         display: flex;
         align-items: center;
     }
+    & #AddProduct_image {
+        display: flex;
+        align-items: center;
+    }
 `;
 export const WrapperUploadFile = styled(Upload)`
     margin-right: 30px;

@@ -18,7 +18,7 @@ const HomePage = () => {
 
     //hàm fetchProductAll sẽ gọi api lấy dữ liệu sản phẩm từ server
     const fetchProductAll = async () => {
-        const res = await ProductService.getAllProduct();
+        const res = await ProductService.getAllProduct(12);
         return res;
     };
     //dùng useQuery để gọi hàm fetchProductAll và lấy dữ liệu sản phẩm

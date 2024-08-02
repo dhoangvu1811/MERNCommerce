@@ -60,9 +60,9 @@ const ProfilePage = () => {
     useEffect(() => {
         if (isSuccess) {
             success();
-            // setTimeout(() => {
-            //     window.location.reload();
-            // }, 1000);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         } else if (failureCount > 0) {
             error(failureReason?.response?.data?.message);
         }

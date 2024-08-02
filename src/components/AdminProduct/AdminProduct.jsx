@@ -88,7 +88,6 @@ const AdminProduct = () => {
             fetchGetDetailsProduct(rowSelected);
         }
     };
-    console.log('rowSelected', rowSelected);
     const renderAction = () => {
         return (
             <div style={{ display: 'flex', gap: '20px' }}>
@@ -341,6 +340,32 @@ const AdminProduct = () => {
         failureCount: failureCountDelete,
     } = mutationDelete;
 
+    // Hàm cập xóa sản phẩm theo checkbox
+    const mutationDeleteMany = useMutationHook((data) => {
+        const { token, ...ids } = data;
+        const res = ProductService.deleteManyProduct(ids, token);
+        return res;
+    });
+    const {
+        data: dataDeleteMany,
+        isPending: isPendingDeleteMutationMany,
+        isSuccess: isSuccessDeleteMany,
+        isError: isErrorDeleteMany,
+        failureReason: failureReasonDeleteMany,
+        failureCount: failureCountDeleteMany,
+    } = mutationDeleteMany;
+    const handleDeleteManyProduct = (ids) => {
+        // console.log('delete many', { _id });
+        mutationDeleteMany.mutate(
+            { ids: ids, token: user?.access_token },
+            {
+                onSettled: () => {
+                    queryProduct.refetch();
+                },
+            }
+        );
+    };
+
     // Hàm thông báo
     const success = (mes = 'Thành công') => {
         messageApi.open({
@@ -467,6 +492,15 @@ const AdminProduct = () => {
         }
     }, [isSuccessDelete, isErrorDelete]);
 
+    // Hàm xử lý khi xoá sản phẩm chọn từ checkbox thành công hoặc thất bại
+    useEffect(() => {
+        if (isSuccessDeleteMany && dataDeleteMany?.status === 'success') {
+            success('Xoá sản phẩm tuỳ chọn thành công');
+        } else if (failureCountDeleteMany > 0) {
+            error(failureReasonDeleteMany?.response?.data.message);
+        }
+    }, [isSuccessDeleteMany, isErrorDeleteMany]);
+
     // Hàm xử lý khi click vào 1 dòng trong bảng
     useEffect(() => {
         if (rowSelected) {
@@ -507,6 +541,9 @@ const AdminProduct = () => {
                             }, // click row
                         };
                     }}
+                    type='sản phẩm'
+                    handleDeleteManyProduct={handleDeleteManyProduct}
+                    isPendingDeleteMutationMany={isPendingDeleteMutationMany}
                 />
             </div>
             <ModalComponent
