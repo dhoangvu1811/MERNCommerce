@@ -14,7 +14,6 @@ const ButtonComponent = ({
         <Button
             style={{
                 ...styleButton,
-                background: disabled ? '#ccc' : styleButton.background,
             }}
             size={size}
             icon={icon}

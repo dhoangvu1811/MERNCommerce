@@ -38,7 +38,7 @@ export const routes = [
         layout: NotHeaderComponent,
     },
     {
-        path: '/product-detail',
+        path: '/product-detail/:id',
         component: ProductDetailPage,
     },
     {

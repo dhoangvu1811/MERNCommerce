@@ -9,9 +9,11 @@ import {
 } from './CardStyle';
 import { StarFilled } from '@ant-design/icons';
 import chinhhang from '../../assets/images/chinhhang.png';
+import { useNavigate } from 'react-router-dom';
 
 const CardComponent = (props) => {
     const {
+        id,
         countInStock,
         description,
         image,
@@ -22,6 +24,10 @@ const CardComponent = (props) => {
         selled,
         discount,
     } = props;
+    const navigate = useNavigate();
+    const handleDetailsProduct = (id) => {
+        navigate(`/product-detail/${id}`);
+    };
     return (
         <Card
             hoverable
@@ -37,6 +43,7 @@ const CardComponent = (props) => {
                     src={image}
                 />
             }
+            onClick={() => handleDetailsProduct(id)}
         >
             <img
                 alt='chinhhang'
