@@ -9,7 +9,6 @@ import {
 } from './CardStyle';
 import { StarFilled } from '@ant-design/icons';
 import chinhhang from '../../assets/images/chinhhang.png';
-import productimg from '../../assets/images/productimg.png';
 
 const CardComponent = (props) => {
     const {
@@ -35,7 +34,7 @@ const CardComponent = (props) => {
                 <img
                     style={{ width: '200px', height: '200px' }}
                     alt='example'
-                    src={productimg}
+                    src={image}
                 />
             }
         >
@@ -62,7 +61,8 @@ const CardComponent = (props) => {
                 </WrapperStyleTextSell>
             </WrapperReportText>
             <WrapperPriceText>
-                {price} <span style={{ textDecoration: 'underline' }}>đ</span>
+                {price.toLocaleString()}
+                <span style={{ textDecoration: 'underline' }}>đ</span>
                 <WrapperDiscountText>-{discount || 10}%</WrapperDiscountText>
             </WrapperPriceText>
         </Card>

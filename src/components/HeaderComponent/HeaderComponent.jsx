@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as UserService from '../../services/UserService';
 import { logoutUser } from '../../redux/slices/userSlice';
+import { searchProduct } from '../../redux/slices/ProductSlice';
 
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const [userAvatar, setUserAvatar] = useState('');
     // Hook message để hiển thị thông báo
     const [messageApi, contextHolder] = message.useMessage();
+    const [search, setSearch] = useState('');
 
     const success = () => {
         messageApi.open({
@@ -69,6 +71,10 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
             </WrapperContentPopup>
         </div>
     );
+    const onSearch = (e) => {
+        setSearch(e.target.value);
+        dispatch(searchProduct(e.target.value));
+    };
     return (
         <>
             {contextHolder}
@@ -95,12 +101,13 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                         <Col span={13}>
                             <ButtonInputSearch
                                 size='large'
-                                textButton='Tìm kiếm'
+                                // textButton='Tìm kiếm'
                                 placeholder='Tìm sản phẩm mong muốn...'
                                 backgroundColorInput='#fff'
                                 backgroundColorButton='#0f60b8'
                                 colorButton='#fff'
                                 bordered={false}
+                                onChange={onSearch}
                             />
                         </Col>
                     )}

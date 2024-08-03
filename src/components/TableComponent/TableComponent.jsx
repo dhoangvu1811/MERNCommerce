@@ -65,30 +65,32 @@ const TableComponent = (props) => {
     };
     return (
         <LoadingComponent isPending={isLoading}>
-            {rowSelectedKey.length > 0 && (
-                <LoadingComponent
-                    isPending={
-                        isPendingDeleteMutationMany ||
-                        isPendingDeleteMutationManyUser
-                    }
-                >
-                    <div>
-                        <Button type='primary' onClick={showModal}>
-                            Xoá tất cả
-                        </Button>
-                        <ModalComponent
-                            isOpen={isModalOpen}
-                            onOk={handleOk}
-                            onCancel={handleCancel}
-                        >
-                            Bạn có muốn xoá những {type} này không?
-                        </ModalComponent>
-                    </div>
-                </LoadingComponent>
-            )}
-            <Button type='primary' onClick={handleExportExcel}>
-                Export Excel
-            </Button>
+            <div style={{ display: 'flex', gap: '20px' }}>
+                {rowSelectedKey.length > 0 && (
+                    <LoadingComponent
+                        isPending={
+                            isPendingDeleteMutationMany ||
+                            isPendingDeleteMutationManyUser
+                        }
+                    >
+                        <div>
+                            <Button type='primary' onClick={showModal}>
+                                Xoá tất cả
+                            </Button>
+                            <ModalComponent
+                                isOpen={isModalOpen}
+                                onOk={handleOk}
+                                onCancel={handleCancel}
+                            >
+                                Bạn có muốn xoá những {type} này không?
+                            </ModalComponent>
+                        </div>
+                    </LoadingComponent>
+                )}
+                <Button type='primary' onClick={handleExportExcel}>
+                    Export Excel
+                </Button>
+            </div>
             <Table
                 rowSelection={{
                     type: selectionType,

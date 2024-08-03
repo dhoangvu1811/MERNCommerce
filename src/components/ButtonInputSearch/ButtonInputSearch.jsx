@@ -12,6 +12,7 @@ const ButtonInputSearch = (props) => {
         colorButton,
         backgroundColorButton,
         bordered,
+        onChange,
     } = props;
     return (
         <div style={{ display: 'flex' }}>
@@ -24,6 +25,7 @@ const ButtonInputSearch = (props) => {
                 bordered={bordered}
                 size={size}
                 placeholder={placeholder}
+                onChange={onChange}
             />
             <ButtonComponent
                 styleButton={{

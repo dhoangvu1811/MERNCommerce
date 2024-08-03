@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TypeProductComponent from '../../components/TypeProductComponent/TypeProductComponent';
 import {
     WrapperButtonMore,
@@ -13,23 +13,40 @@ import hinh4 from '../../assets/images/hinh4.png';
 import CardComponent from '../../components/CardComponent/CardComponent';
 import { useQuery } from '@tanstack/react-query';
 import * as ProductService from '../../services/ProductService.js';
+import { useSelector } from 'react-redux';
+import { useDebounce } from '../../hooks/useDebounce.js';
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent.jsx';
 const HomePage = () => {
+    const searchProduct = useSelector((state) => state.product.search);
+    const [stateProduct, setStateProduct] = useState([]);
+    const searchDebounce = useDebounce(searchProduct, 500);
+    const [limit, setLimit] = useState(6);
     const arr = ['TV', 'Tu Lanh', 'Laptop'];
 
     //hàm fetchProductAll sẽ gọi api lấy dữ liệu sản phẩm từ server
-    const fetchProductAll = async () => {
-        const res = await ProductService.getAllProduct(12);
+    const fetchProductAll = async (context) => {
+        const search = context.queryKey && context.queryKey[1];
+        const limit = context.queryKey && context.queryKey[2];
+        const res = await ProductService.getAllProduct(search, limit);
         return res;
     };
     //dùng useQuery để gọi hàm fetchProductAll và lấy dữ liệu sản phẩm
-    const { data: products, isLoading } = useQuery({
-        queryKey: ['products'],
-        queryFn: fetchProductAll,
+    const {
+        data: products,
+        isLoading,
+        isPreviousData,
+    } = useQuery({
+        queryKey: ['products', searchDebounce, limit],
+        queryFn: (context) => fetchProductAll(context),
         retry: 3,
         retryDelay: 1000,
+        keepPreviousData: true,
     });
-    console.log('data', products);
-
+    useEffect(() => {
+        if (products?.data?.length > 0) {
+            setStateProduct(products?.data);
+        }
+    }, [products]);
     return (
         <>
             <div style={{ width: '1270px', margin: '0 auto' }}>
@@ -52,24 +69,26 @@ const HomePage = () => {
                     }}
                 >
                     <SliderComponent arrImages={[hinh1, hinh2, hinh3, hinh4]} />
-                    <WrapperProducts>
-                        {products?.data?.map((product) => {
-                            return (
-                                <CardComponent
-                                    key={product._id}
-                                    countInStock={product.countInStock}
-                                    description={product.description}
-                                    image={product.image}
-                                    name={product.name}
-                                    price={product.price}
-                                    rating={product.rating}
-                                    type={product.type}
-                                    selled={product.selled}
-                                    discount={product.discount}
-                                />
-                            );
-                        })}
-                    </WrapperProducts>
+                    <LoadingComponent isPending={isLoading}>
+                        <WrapperProducts>
+                            {stateProduct?.map((product) => {
+                                return (
+                                    <CardComponent
+                                        key={product._id}
+                                        countInStock={product.countInStock}
+                                        description={product.description}
+                                        image={product.image}
+                                        name={product.name}
+                                        price={product.price}
+                                        rating={product.rating}
+                                        type={product.type}
+                                        selled={product.selled}
+                                        discount={product.discount}
+                                    />
+                                );
+                            })}
+                        </WrapperProducts>
+                    </LoadingComponent>
                     <div
                         style={{
                             width: '100%',
@@ -87,6 +106,11 @@ const HomePage = () => {
                                 height: '38px',
                             }}
                             styleTextButton={{ fontWeight: 500 }}
+                            onClick={() => setLimit((prev) => prev + 6)}
+                            disabled={
+                                products?.total === products?.data?.length ||
+                                products?.totalPage === 1
+                            }
                         />
                     </div>
                 </div>
