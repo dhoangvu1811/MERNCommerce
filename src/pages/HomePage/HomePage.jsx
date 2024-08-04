@@ -21,7 +21,18 @@ const HomePage = () => {
     const [stateProduct, setStateProduct] = useState([]);
     const searchDebounce = useDebounce(searchProduct, 500);
     const [limit, setLimit] = useState(6);
-    const arr = ['TV', 'Tu Lanh', 'Laptop'];
+    const [stateTypeProduct, setStateTypeProduct] = useState([]);
+
+    const fetchAllTypeProduct = async () => {
+        const res = await ProductService.getAllTypeProduct();
+        if (res?.status === 'success') {
+            setStateTypeProduct(res?.data);
+        }
+        return res;
+    };
+    useEffect(() => {
+        fetchAllTypeProduct();
+    }, []);
 
     //hàm fetchProductAll sẽ gọi api lấy dữ liệu sản phẩm từ server
     const fetchProductAll = async (context) => {
@@ -51,7 +62,7 @@ const HomePage = () => {
         <>
             <div style={{ width: '1270px', margin: '0 auto' }}>
                 <WrapperTypeProduct>
-                    {arr.map((item, index) => {
+                    {stateTypeProduct.map((item, index) => {
                         return <TypeProductComponent key={index} name={item} />;
                     })}
                 </WrapperTypeProduct>

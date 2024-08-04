@@ -5,7 +5,7 @@ import {
     SearchOutlined,
     UploadOutlined,
 } from '@ant-design/icons';
-import { Button, Form, Input, message, Space } from 'antd';
+import { Button, Form, Input, message, Select, Space } from 'antd';
 import {
     WrapperForm,
     WrapperHeader,
@@ -44,6 +44,7 @@ const AdminProduct = () => {
         rating: '',
         description: '',
         image: '',
+        newType: '',
     });
     const [stateProductDetails, setStateProductDetails] = useState({
         name: '',
@@ -53,6 +54,7 @@ const AdminProduct = () => {
         rating: '',
         description: '',
         image: '',
+        newType: '',
     });
 
     // Hàm lấy dữ liệu sản phẩm từ api
@@ -96,7 +98,10 @@ const AdminProduct = () => {
             </div>
         );
     };
-
+    const fetchAllTypeProduct = async () => {
+        const res = await ProductService.getAllTypeProduct();
+        return res;
+    };
     // Lấy dữ liệu sản phẩm từ api để hiển thị lên bảng
     const queryProduct = useQuery({
         queryKey: ['getAllProduct'],
@@ -106,6 +111,37 @@ const AdminProduct = () => {
     });
     const { isLoading: isLoadingProduct, data: products } = queryProduct;
 
+    // Lấy dữ liệu loại sản phẩm từ api
+    const queryTypeProduct = useQuery({
+        queryKey: ['getTypeProduct'],
+        queryFn: fetchAllTypeProduct,
+        retry: 1,
+        retryDelay: 1000,
+    });
+    const { isLoading: isLoadingTypeProduct, data: typeProducts } =
+        queryTypeProduct;
+
+    const handleRenderTypeProduct = () => {
+        let typeResult =
+            typeProducts?.data?.map((item) => ({
+                label: item,
+                value: item,
+            })) || [];
+        typeResult.push({ label: 'Thêm loại', value: 'add_type' });
+        return typeResult;
+    };
+    const handleOnChangeSelect = (value) => {
+        setStateProduct({
+            ...stateProduct,
+            type: value,
+        });
+    };
+    const handleOnChangeSelectUpdate = (value) => {
+        setStateProductDetails({
+            ...stateProductDetails,
+            type: value,
+        });
+    };
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -199,20 +235,6 @@ const AdminProduct = () => {
                 setTimeout(() => searchInput.current?.select(), 100);
             }
         },
-        // render: (text) =>
-        //     searchedColumn === dataIndex ? (
-        //         <Highlighter
-        //             highlightStyle={{
-        //                 backgroundColor: '#ffc069',
-        //                 padding: 0,
-        //             }}
-        //             searchWords={[searchText]}
-        //             autoEscape
-        //             textToHighlight={text ? text.toString() : ''}
-        //         />
-        //     ) : (
-        //         text
-        //     ),
     });
 
     const columnTable = [
@@ -408,18 +430,42 @@ const AdminProduct = () => {
         formUpdate.resetFields();
     };
     const onFinish = (values) => {
-        mutation.mutate(stateProduct, {
+        const data = {
+            name: stateProduct.name,
+            type:
+                stateProduct.type === 'add_type'
+                    ? stateProduct.newType
+                    : stateProduct.type,
+            countInStock: stateProduct.countInStock,
+            price: stateProduct.price,
+            rating: stateProduct.rating,
+            description: stateProduct.description,
+            image: stateProduct.image,
+        };
+        mutation.mutate(data, {
             onSettled: () => {
                 queryProduct.refetch();
             },
         });
     };
     const onUpdateProduct = (values) => {
+        const dataDetails = {
+            name: stateProductDetails.name,
+            type:
+                stateProductDetails.type === 'add_type'
+                    ? stateProductDetails.newType
+                    : stateProductDetails.type,
+            countInStock: stateProductDetails.countInStock,
+            price: stateProductDetails.price,
+            rating: stateProductDetails.rating,
+            description: stateProductDetails.description,
+            image: stateProductDetails.image,
+        };
         mutationUpdate.mutate(
             {
                 id: rowSelected,
                 token: user?.access_token,
-                ...stateProductDetails,
+                ...dataDetails,
             },
             {
                 onSettled: () => {
@@ -598,12 +644,30 @@ const AdminProduct = () => {
                                 },
                             ]}
                         >
-                            <InputForm
-                                value={stateProduct.type}
-                                onChange={handleOnChange}
+                            <Select
                                 name='type'
+                                onChange={handleOnChangeSelect}
+                                options={handleRenderTypeProduct()}
                             />
                         </WrapperForm.Item>
+                        {stateProduct.type === 'add_type' && (
+                            <WrapperForm.Item
+                                label='Thêm phân loại'
+                                name='newType'
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập phân loại!',
+                                    },
+                                ]}
+                            >
+                                <InputForm
+                                    value={stateProduct.newType}
+                                    onChange={handleOnChange}
+                                    name='newType'
+                                />
+                            </WrapperForm.Item>
+                        )}
                         <WrapperForm.Item
                             label='Số lượng'
                             name='countInStock'
@@ -769,12 +833,30 @@ const AdminProduct = () => {
                                 },
                             ]}
                         >
-                            <InputForm
-                                value={stateProductDetails.type}
-                                onChange={handleOnChangeDetails}
+                            <Select
                                 name='type'
+                                onChange={handleOnChangeSelectUpdate}
+                                options={handleRenderTypeProduct()}
                             />
                         </WrapperForm.Item>
+                        {stateProductDetails.type === 'add_type' && (
+                            <WrapperForm.Item
+                                label='Thêm phân loại'
+                                name='newType'
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập phân loại!',
+                                    },
+                                ]}
+                            >
+                                <InputForm
+                                    value={stateProductDetails.newType}
+                                    onChange={handleOnChangeDetails}
+                                    name='newType'
+                                />
+                            </WrapperForm.Item>
+                        )}
                         <WrapperForm.Item
                             label='Số lượng'
                             name='countInStock'
