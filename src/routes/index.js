@@ -24,7 +24,7 @@ export const routes = [
         component: ProductsPage,
     },
     {
-        path: '/:type',
+        path: '/product/:type',
         component: TypeProductPage,
     },
     {

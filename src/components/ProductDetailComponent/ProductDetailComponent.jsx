@@ -61,7 +61,7 @@ const ProductDetailComponent = ({ idProduct }) => {
     };
     return (
         <LoadingComponent isPending={isLoading}>
-            <Row gutter={4} style={{ padding: '16px', background: '#fff' }}>
+            <Row style={{ padding: '16px', background: '#fff' }}>
                 <Col span={9}>
                     <Image
                         src={productDetail?.image}
@@ -118,7 +118,7 @@ const ProductDetailComponent = ({ idProduct }) => {
                         </WrapperStyleColImage>
                     </Row>
                 </Col>
-                <WrapperDetailProduct span={13}>
+                <WrapperDetailProduct span={15}>
                     <WrapperStyleNameProduct>
                         {productDetail?.name}
                         <div>

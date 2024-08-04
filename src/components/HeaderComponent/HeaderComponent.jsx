@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as UserService from '../../services/UserService';
 import { logoutUser } from '../../redux/slices/userSlice';
 import { searchProduct } from '../../redux/slices/ProductSlice';
+import styled from 'styled-components';
 
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const dispatch = useDispatch();
@@ -95,7 +96,12 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                     }}
                 >
                     <Col span={5}>
-                        <WrapperTextHeader>THUCTAPTHUCTE</WrapperTextHeader>
+                        <WrapperTextHeader
+                            onClick={() => navigate('/')}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            THUCTAPTHUCTE
+                        </WrapperTextHeader>
                     </Col>
                     {!isHiddenSearch && (
                         <Col span={13}>
@@ -167,7 +173,10 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                             )}
                         </WrapperHeaderAccount>
                         {!isHiddenCart && (
-                            <div>
+                            <div
+                                onClick={() => navigate('/order')}
+                                style={{ cursor: 'pointer ' }}
+                            >
                                 <Badge count={4} size='small'>
                                     <WrapperIconHeader>
                                         <ShoppingCartOutlined />

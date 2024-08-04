@@ -68,7 +68,7 @@ const CardComponent = (props) => {
                 </WrapperStyleTextSell>
             </WrapperReportText>
             <WrapperPriceText>
-                {price.toLocaleString()}
+                {price?.toLocaleString()}
                 <span style={{ textDecoration: 'underline' }}>đ</span>
                 <WrapperDiscountText>-{discount || 10}%</WrapperDiscountText>
             </WrapperPriceText>
