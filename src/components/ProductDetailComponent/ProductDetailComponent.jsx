@@ -29,9 +29,14 @@ import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import * as ProductService from '../../services/ProductService';
 import { useQuery } from '@tanstack/react-query';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { addOrderProduct, orderSlice } from '../../redux/slices/OrderSlice';
 
 const ProductDetailComponent = ({ idProduct }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
     const user = useSelector((state) => state.user);
     const [numProduct, setNumProduct] = useState(1);
     const fetchDetailsProduct = async (id) => {
@@ -45,11 +50,10 @@ const ProductDetailComponent = ({ idProduct }) => {
         queryFn: () => fetchDetailsProduct(idProduct),
         enabled: !!idProduct,
     });
-
-    console.log('productDetail', productDetail);
     const onChange = (e) => {
         setNumProduct(Number(e.target.value));
     };
+
     const handleChangeCount = (type) => {
         if (type === 'increase') {
             setNumProduct(numProduct + 1);
@@ -57,6 +61,29 @@ const ProductDetailComponent = ({ idProduct }) => {
             if (numProduct > 1) {
                 setNumProduct(numProduct - 1);
             }
+        }
+    };
+
+    const handleAddOrderProduct = () => {
+        if (!user?.id) {
+            navigate('/sign-in', { state: location?.pathname });
+        } else {
+            dispatch(
+                addOrderProduct({
+                    orderItem: {
+                        name: productDetail?.name,
+                        amount: numProduct,
+                        image: productDetail?.image,
+                        price: productDetail?.price,
+                        product: productDetail?._id,
+                    },
+                    shippingAddress: {
+                        fullName: user?.name,
+                        address: user?.address,
+                        phone: user?.phone,
+                    },
+                })
+            );
         }
     };
     return (
@@ -186,6 +213,7 @@ const ProductDetailComponent = ({ idProduct }) => {
                                         color: '#0a68ff',
                                     }}
                                     disabled={false}
+                                    onClick={handleAddOrderProduct}
                                 />
                             </WrapperBtnBuyAdd>
                         </WrapperPriceTextProduct>

@@ -10,7 +10,7 @@ import LoadingComponent from '../../components/LoadingComponent/LoadingComponent
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import signin from '../../assets/images/signup.png';
 import { Image, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as UserService from '../../services/UserService';
 import { useMutationHook } from '../../hooks/useMutationHook';
 import { jwtDecode } from 'jwt-decode';
@@ -22,6 +22,7 @@ const SignInPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [messageApi, contextHolder] = message.useMessage();
+    const location = useLocation();
 
     // Hook dispatch để gửi action lên store
     const dispatch = useDispatch();
@@ -49,10 +50,15 @@ const SignInPage = () => {
     useEffect(() => {
         if (isSuccess) {
             success();
-            setTimeout(() => {
-                navigate('/');
-            }, 1000); // Độ trễ 1 giây trước khi chuyển trang
-
+            if (location?.state) {
+                setTimeout(() => {
+                    navigate(location?.state);
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    navigate('/');
+                }, 1000); // Độ trễ 1 giây trước khi chuyển trang
+            }
             // Lưu access_token vào localStorage
             localStorage.setItem(
                 'access_token',
@@ -61,7 +67,6 @@ const SignInPage = () => {
             if (data?.access_token) {
                 // giải mã token
                 const decoded = jwtDecode(data?.access_token);
-                console.log('decoded', decoded);
 
                 // Lấy thông tin user từ token giải mã được và access_token để gọi api
                 if (decoded?.id) {
@@ -77,7 +82,6 @@ const SignInPage = () => {
     const handleGetDetailsUser = async (id, access_token) => {
         const res = await UserService.getDetailsUser(id, access_token);
         dispatch(updateUser({ ...res?.data, access_token: access_token }));
-        console.log('res', res);
     };
 
     const handleNavigateSignUp = () => {

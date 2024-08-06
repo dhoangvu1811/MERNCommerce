@@ -1,4 +1,6 @@
+import { InputNumber } from 'antd';
 import styled from 'styled-components';
+import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 
 export const WrapperStyleHeader = styled.div`
     background: rgb(255, 255, 255);
@@ -33,8 +35,8 @@ export const WrapperPriceDiscount = styled.span`
 export const WrapperCountOrder = styled.div`
     display: flex;
     align-items: center;
-    width: 84px;
-    border: 1px solid #ccc;
+    width: fit-content;
+    border: none;
     border-radius: 4px;
 `;
 export const WrapperRight = styled.div`
@@ -61,4 +63,14 @@ export const WrapperTotal = styled.div`
     background: #fff;
     border-bottom-right-radius: 6px;
     border-bottom-left-radius: 6px;
+`;
+export const WrapperInputNumber = styled(InputNumber)`
+    width: 50px;
+    margin: 0 5px;
+    & .ant-input-number-handler-wrap {
+        display: none;
+    }
+`;
+export const WrapperBtnQualityProduct = styled(ButtonComponent)`
+    width: 5px;
 `;

@@ -22,6 +22,7 @@ import { searchProduct } from '../../redux/slices/ProductSlice';
 import styled from 'styled-components';
 
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
+    const orderProduct = useSelector((state) => state.order);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [userAvatar, setUserAvatar] = useState('');
@@ -177,7 +178,10 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                                 onClick={() => navigate('/order')}
                                 style={{ cursor: 'pointer ' }}
                             >
-                                <Badge count={4} size='small'>
+                                <Badge
+                                    count={orderProduct?.orderItems?.length}
+                                    size='small'
+                                >
                                     <WrapperIconHeader>
                                         <ShoppingCartOutlined />
                                     </WrapperIconHeader>

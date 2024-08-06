@@ -90,6 +90,9 @@ export const WrapperBtnQualityProduct = styled(ButtonComponent)`
 export const WrapperInputNumber = styled(InputNumber)`
     width: 50px;
     margin: 0 5px;
+    & .ant-input-number-handler-wrap {
+        display: none;
+    }
 `;
 export const WrapperBonusServices = styled.div`
     display: flex;
