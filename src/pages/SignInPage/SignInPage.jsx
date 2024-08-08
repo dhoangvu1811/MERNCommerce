@@ -1,54 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import {
+    WrapperAnchor,
+    WrapperButton,
+    WrapperButtonComponent,
+    WrapperContainer,
     WrapperContainerLeft,
     WrapperContainerRight,
+    WrapperForm,
+    WrapperInfield,
     WrapperMessageERR,
+    WrapperOverlay,
+    WrapperOverlayBtn,
+    WrapperOverlayContainer,
+    WrapperOverlayLeft,
+    WrapperOverlayPanel,
+    WrapperOverlayRight,
     WrapperSignIn,
+    WrappersignInContainer,
+    WrappersignUpContainer,
+    WrapperSocialContainer,
+    WrapperText,
+    WrapperTitle,
 } from './SignInStyle';
 import InputForm from '../../components/InputForm/InputForm';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
-import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
-import signin from '../../assets/images/signup.png';
-import { Image, message } from 'antd';
+import { message } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as UserService from '../../services/UserService';
 import { useMutationHook } from '../../hooks/useMutationHook';
 import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../redux/slices/userSlice';
+import {
+    FacebookOutlined,
+    GooglePlusOutlined,
+    LinkedinOutlined,
+} from '@ant-design/icons';
 
 const SignInPage = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [messageApi, contextHolder] = message.useMessage();
     const location = useLocation();
+    const [emailSignIn, setEmailSignIn] = useState('');
+    const [passwordSignIn, setPasswordSignIn] = useState('');
 
     // Hook dispatch để gửi action lên store
     const dispatch = useDispatch();
 
-    // Hàm thông báo
-    const success = () => {
-        messageApi.open({
-            type: 'success',
-            content: 'Đăng nhập thành công',
-        });
-    };
-    const error = (mes = 'Đăng nhập thất bại') => {
-        messageApi.open({
-            type: 'error',
-            content: mes,
-        });
-    };
-
     // Hook gọi api đăng nhập user từ dữ liệu data gửi lên server (email, password) từ UserService
-    const mutation = useMutationHook((data) => UserService.loginUser(data));
-    const { data, isPending, isSuccess, isError, failureCount, failureReason } =
-        mutation;
-    // console.log('mutation', mutation);
+    const mutationSignIn = useMutationHook((data) =>
+        UserService.loginUser(data)
+    );
+    const {
+        data: dataSignIn,
+        isPending: isPendingSignIn,
+        isSuccess: isSuccessSignIn,
+        isError: isErrorSignIn,
+        failureCount: failureCountSignIn,
+        failureReason: failureReasonSignIn,
+    } = mutationSignIn;
 
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccessSignIn) {
             success();
             if (location?.state) {
                 setTimeout(() => {
@@ -62,21 +75,21 @@ const SignInPage = () => {
             // Lưu access_token vào localStorage
             localStorage.setItem(
                 'access_token',
-                JSON.stringify(data?.access_token)
+                JSON.stringify(dataSignIn?.access_token)
             );
-            if (data?.access_token) {
+            if (dataSignIn?.access_token) {
                 // giải mã token
-                const decoded = jwtDecode(data?.access_token);
+                const decoded = jwtDecode(dataSignIn?.access_token);
 
                 // Lấy thông tin user từ token giải mã được và access_token để gọi api
                 if (decoded?.id) {
-                    handleGetDetailsUser(decoded?.id, data?.access_token);
+                    handleGetDetailsUser(decoded?.id, dataSignIn?.access_token);
                 }
             }
-        } else if (failureCount > 0) {
-            error(failureReason?.response?.data?.message);
+        } else if (failureCountSignIn > 0) {
+            error(failureReasonSignIn?.response?.data?.message);
         }
-    }, [isSuccess, isError]);
+    }, [isSuccessSignIn, isErrorSignIn]);
 
     // Hàm lấy thông tin user
     const handleGetDetailsUser = async (id, access_token) => {
@@ -84,22 +97,99 @@ const SignInPage = () => {
         dispatch(updateUser({ ...res?.data, access_token: access_token }));
     };
 
-    const handleNavigateSignUp = () => {
-        navigate('/sign-up');
+    const handleOnChangeEmailSignIn = (e) => {
+        setEmailSignIn(e.target.value);
     };
-    const handleOnChangeEmail = (e) => {
-        setEmail(e.target.value);
-    };
-    const handleOnChangePassword = (e) => {
-        setPassword(e.target.value);
+    const handleOnChangePasswordSignIn = (e) => {
+        setPasswordSignIn(e.target.value);
     };
     const handleSignIn = (e) => {
         // Gọi hàm mutate để gọi api đăng nhập user từ dữ liệu data gửi lên server (email, password)
-        mutation.mutate({
-            email,
-            password,
+        mutationSignIn.mutate({
+            emailSignIn,
+            passwordSignIn,
         });
     };
+
+    //đăng ký
+    const [emailSignUp, setEmailSignUp] = useState('');
+    const [passwordSignUp, setPasswordSignUp] = useState('');
+    const [confirmPasswordSignUp, setConfirmPasswordSignUp] = useState('');
+
+    const success = (mes = 'Thành công') => {
+        messageApi.open({
+            type: 'success',
+            content: mes,
+        });
+    };
+
+    const error = (mes = 'Thất bại') => {
+        messageApi.open({
+            type: 'error',
+            content: mes,
+        });
+    };
+
+    const mutationSignUp = useMutationHook((data) =>
+        UserService.signupUser(data)
+    );
+    const {
+        data: dataSignUp,
+        isPending: isPendingSignUp,
+        isSuccess: isSuccessSignUp,
+        isError: isErrorSignUp,
+        failureReason: failureReasonSignUp,
+        failureCount: failureCountSignUp,
+    } = mutationSignUp;
+
+    useEffect(() => {
+        if (isSuccessSignUp) {
+            success();
+            setEmailSignUp('');
+            setPasswordSignUp('');
+            setConfirmPasswordSignUp('');
+        } else if (failureCountSignUp > 0) {
+            error(failureReasonSignUp?.response?.data?.message);
+        }
+    }, [isSuccessSignUp, isErrorSignUp]);
+
+    const handleOnChangeEmailSignUp = (e) => {
+        setEmailSignUp(e.target.value);
+    };
+    const handleOnChangePasswordSignUp = (e) => {
+        setPasswordSignUp(e.target.value);
+    };
+    const handleOnChangeConfirmPasswordSignUp = (e) => {
+        setConfirmPasswordSignUp(e.target.value);
+    };
+    const handleSignUp = () => {
+        mutationSignUp.mutate({
+            emailSignUp,
+            passwordSignUp,
+            confirmPasswordSignUp,
+        });
+    };
+    const [isRightPanelActive, setIsRightPanelActive] = useState(false);
+
+    useEffect(() => {
+        const container = document.getElementById('container');
+        const overlaycon = document.getElementById('overlayCon');
+        const overlayBtn = document.getElementById('overlayBtn');
+
+        const handleOverlayBtnClick = () => {
+            container.classList.toggle('right-panel-active');
+            overlayBtn.classList.remove('btnScaled');
+            window.requestAnimationFrame(() => {
+                overlayBtn.classList.add('btnScaled');
+            });
+        };
+
+        overlayBtn.addEventListener('click', handleOverlayBtnClick);
+
+        return () => {
+            overlayBtn.removeEventListener('click', handleOverlayBtnClick);
+        };
+    }, []);
     return (
         <>
             {contextHolder}
@@ -109,70 +199,145 @@ const SignInPage = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     height: '100vh',
-                    background: 'rgba(0, 0, 0, 0.53)',
                 }}
             >
-                <WrapperSignIn>
-                    <WrapperContainerLeft>
-                        <div className='heading'>
-                            <h4>Xin chào,</h4>
-                            <p>Đăng nhập hoặc Tạo tài khoản</p>
-                        </div>
-                        <InputForm
-                            value={email}
-                            onChange={handleOnChangeEmail}
-                            placeholder='abc@email.com'
-                            style={{ height: '40px' }}
-                        />
-                        <InputForm
-                            value={password}
-                            onChange={handleOnChangePassword}
-                            placeholder='Mật khẩu'
-                            type='password'
-                            style={{ marginTop: '10px', height: '40px' }}
-                        />
-                        {data?.status === 'error' && (
-                            <WrapperMessageERR>
-                                {data?.message}
-                            </WrapperMessageERR>
-                        )}
-                        <LoadingComponent isPending={isPending}>
-                            <ButtonComponent
-                                onClick={handleSignIn}
-                                disabled={!email || !password}
-                                textButton={'Đăng nhập'}
-                                styleButton={{
-                                    background: '#ff424e',
-                                    height: '48px',
-                                    width: '100%',
-                                    border: 'none',
-                                    color: '#fff',
-                                    margin: '26px 0 10px',
-                                }}
-                            />
-                        </LoadingComponent>
-                        <p className='forgot-pass'>Quên mật khẩu?</p>
-                        <p className='create-account'>
-                            Chưa có tài khoản?{' '}
-                            <span onClick={handleNavigateSignUp}>
-                                Tạo tài khoản
+                <WrapperContainer className='container' id='container'>
+                    <WrappersignUpContainer className='form-container sign-up-container'>
+                        <WrapperForm>
+                            <h1>Create Account</h1>
+                            <WrapperSocialContainer className='social-container'>
+                                <WrapperAnchor href='#' className='social'>
+                                    <FacebookOutlined />
+                                </WrapperAnchor>
+                                <WrapperAnchor href='#' className='social'>
+                                    <GooglePlusOutlined />
+                                </WrapperAnchor>
+                                <WrapperAnchor href='#' className='social'>
+                                    <LinkedinOutlined />
+                                </WrapperAnchor>
+                            </WrapperSocialContainer>
+                            <span>or use your email for registration</span>
+                            <WrapperInfield className='infield'>
+                                <InputForm
+                                    value={emailSignUp}
+                                    onChange={handleOnChangeEmailSignUp}
+                                    placeholder='abc@email.com'
+                                    style={{ height: '40px' }}
+                                />
+                            </WrapperInfield>
+                            <WrapperInfield className='infield'>
+                                <InputForm
+                                    value={passwordSignUp}
+                                    onChange={handleOnChangePasswordSignUp}
+                                    placeholder='Mật khẩu'
+                                    type='password'
+                                    style={{
+                                        marginTop: '10px',
+                                        height: '40px',
+                                    }}
+                                />
+                            </WrapperInfield>
+                            <WrapperInfield className='infield'>
+                                <InputForm
+                                    value={confirmPasswordSignUp}
+                                    onChange={
+                                        handleOnChangeConfirmPasswordSignUp
+                                    }
+                                    placeholder='Nhập lại mật khẩu'
+                                    type='confirmPassword'
+                                    style={{
+                                        marginTop: '10px',
+                                        height: '40px',
+                                    }}
+                                />
+                            </WrapperInfield>
+                            <LoadingComponent isPending={isPendingSignUp}>
+                                <WrapperButtonComponent
+                                    disabled={
+                                        !emailSignUp.length ||
+                                        !passwordSignUp.length ||
+                                        !confirmPasswordSignUp.length
+                                    }
+                                    onClick={handleSignUp}
+                                    textButton={'Tạo tài khoản'}
+                                />
+                            </LoadingComponent>
+                        </WrapperForm>
+                    </WrappersignUpContainer>
+                    <WrappersignInContainer className='form-container sign-in-container'>
+                        <WrapperForm>
+                            <WrapperTitle>Sign in</WrapperTitle>
+                            <WrapperSocialContainer className='social-container'>
+                                <WrapperAnchor href='#' className='social'>
+                                    <FacebookOutlined />
+                                </WrapperAnchor>
+                                <WrapperAnchor href='#' className='social'>
+                                    <GooglePlusOutlined />
+                                </WrapperAnchor>
+                                <WrapperAnchor href='#' className='social'>
+                                    <LinkedinOutlined />
+                                </WrapperAnchor>
+                            </WrapperSocialContainer>
+                            <span style={{ fontSize: '1.2rem' }}>
+                                or use your account
                             </span>
-                        </p>
-                    </WrapperContainerLeft>
-                    <WrapperContainerRight>
-                        <Image
-                            src={signin}
-                            preview={false}
-                            alt='signinlogo'
-                            width='203px'
-                            height='203px'
-                        />
-                        <div className='content'>
-                            <h4>Mua sắm tại Tiki</h4>
-                            <span>Siêu ưu đãi mỗi ngày</span>
-                        </div>
-                    </WrapperContainerRight>
-                </WrapperSignIn>
+                            <WrapperInfield className='infield'>
+                                <InputForm
+                                    value={emailSignIn}
+                                    onChange={handleOnChangeEmailSignIn}
+                                    placeholder='abc@email.com'
+                                    style={{ height: '40px' }}
+                                />
+                            </WrapperInfield>
+                            <WrapperInfield className='infield'>
+                                <InputForm
+                                    value={passwordSignIn}
+                                    onChange={handleOnChangePasswordSignIn}
+                                    placeholder='Mật khẩu'
+                                    type='password'
+                                    style={{
+                                        marginTop: '10px',
+                                        height: '40px',
+                                    }}
+                                />
+                            </WrapperInfield>
+                            <WrapperAnchor href='#' className='forgot'>
+                                Forgot your password?
+                            </WrapperAnchor>
+                            <LoadingComponent isPending={isPendingSignIn}>
+                                <WrapperButtonComponent
+                                    onClick={handleSignIn}
+                                    disabled={!emailSignIn || !passwordSignIn}
+                                    textButton={'Đăng nhập'}
+                                />
+                            </LoadingComponent>
+                        </WrapperForm>
+                    </WrappersignInContainer>
+                    <WrapperOverlayContainer
+                        className='overlay-container'
+                        id='overlayCon'
+                    >
+                        <WrapperOverlay className='overlay'>
+                            <WrapperOverlayLeft className='overlay-panel overlay-left'>
+                                <h1>Welcome Back!</h1>
+                                <WrapperText>
+                                    To keep connected with us please login with
+                                    your personal info
+                                </WrapperText>
+                                <WrapperButton>Sign In</WrapperButton>
+                            </WrapperOverlayLeft>
+                            <WrapperOverlayRight className='overlay-panel overlay-right'>
+                                <h1>Hello, Friend!</h1>
+                                <WrapperText>
+                                    Enter your personal details and start
+                                    journey with us
+                                </WrapperText>
+                                <WrapperButton>Sign Up</WrapperButton>
+                            </WrapperOverlayRight>
+                        </WrapperOverlay>
+                        <WrapperOverlayBtn id='overlayBtn'></WrapperOverlayBtn>
+                    </WrapperOverlayContainer>
+                </WrapperContainer>
             </div>
         </>
     );

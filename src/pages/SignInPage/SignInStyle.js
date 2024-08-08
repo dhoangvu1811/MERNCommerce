@@ -1,76 +1,231 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
+const linearGrad = 'linear-gradient(to right, #141e30, #243b55)';
+const gradClr1 = '#141e30';
+const gradClr2 = '#243b55';
 
-export const WrapperSignIn = styled.div`
-    width: 800px;
-    height: 445px;
-    border-radius: 20px;
-    background: rgb(255, 255, 255);
-    display: flex;
+const show = keyframes`
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+    z-index: 1;
+  }
+  50% {
+    opacity: 0;
+    z-index: 1;
+  }
+  50.1% {
+    opacity: 1;
+    z-index: 5;
+  }
+  100% {
+    transform: translateX(66.7%);
+    opacity: 1;
+    z-index: 5;
+  }
 `;
-export const WrapperContainerLeft = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: 40px 45px 24px;
-    div.heading {
-        margin-bottom: 20px;
-    }
-    div.heading h4 {
-        margin: 0px 0px 10px;
-        font-size: 2.4rem;
-        font-weight: 500;
-    }
-    div.heading p {
-        margin: 0px;
-        font-size: 1.5rem;
-    }
-    p.forgot-pass {
-        color: rgb(13, 92, 182);
-        font-size: 1.3rem;
-        margin: 20px 0px 0px;
-        cursor: pointer;
-        display: inline-block;
-    }
-    p.create-account {
-        color: rgb(120, 120, 120);
-        font-size: 1.3rem;
-        margin: 10px 0px 0px;
-    }
-    p.create-account span {
-        color: rgb(13, 92, 182);
-        display: inline-block;
-        margin-left: 5px;
-        cursor: pointer;
+
+const ScaleBtn = keyframes`
+  0% {
+    width: 143.67px;
+  }
+  50% {
+    width: 250px;
+  }
+  100% {
+    width: 143.67px;
+  }
+`;
+
+export const WrapperContainer = styled.div`
+    position: relative;
+    width: 850px;
+    height: 500px;
+    background-color: #fff;
+    box-shadow: 25px 30px 55px #5557;
+    border-radius: 13px;
+    overflow: hidden;
+
+    &.right-panel-active {
+        .overlay-container {
+            transform: translateX(-150%);
+        }
+        .overlay {
+            transform: translateX(50%);
+        }
+        .overlay-left {
+            transform: translateX(25%);
+        }
+        .overlay-right {
+            transform: translateX(35%);
+        }
+        .sign-in-container {
+            transform: translateX(20%);
+            opacity: 0;
+        }
+        .sign-up-container {
+            transform: translateX(66.7%);
+            opacity: 1;
+            z-index: 5;
+            animation: ${show} 0.6s;
+        }
     }
 `;
-export const WrapperContainerRight = styled.div`
-    width: 300px;
-    border-radius: 20px;
-    background: linear-gradient(
-        136deg,
-        rgb(240, 248, 255) -1%,
-        rgb(219, 238, 255) 85%
-    );
+export const WrapperFormContainer = styled.div`
+    position: absolute;
+    width: 60%;
+    height: 100%;
+    padding: 0 40px;
+    transition: all 0.6s ease-in-out;
+
+    button {
+        margin-top: 17px;
+        transition: 80ms ease-in;
+    }
+    button:hover {
+        background: #fff;
+        color: ${gradClr1};
+    }
+`;
+
+export const WrappersignUpContainer = styled(WrapperFormContainer)`
+    opacity: 0;
+    z-index: 1;
+`;
+export const WrappersignInContainer = styled(WrapperFormContainer)`
+    z-index: 2;
+`;
+export const WrapperForm = styled.div`
+    height: 100%;
     display: flex;
-    justify-content: center;
     flex-direction: column;
     align-items: center;
-    div.content {
-        margin-top: 30px;
-        color: rgb(11, 116, 229);
-        font-size: 1.7rem;
-        font-weight: 500;
-    }
-    div.content h4 {
-        margin: 0 0 5px;
-    }
-    div.content span {
-        font-size: 1.3rem;
-        color: rgb(11, 116, 229);
-        font-weight: 500;
+    justify-content: center;
+    padding: 0 50px;
+`;
+export const WrapperSocialContainer = styled.div`
+    margin: 20px 0;
+
+    a {
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 5px;
+        height: 40px;
+        width: 40px;
+        font-size: 2rem;
     }
 `;
-export const WrapperMessageERR = styled.span`
-    color: red;
-    font-size: 1.8rem;
+export const WrapperInfield = styled.div`
+    position: relative;
+    margin: 8px 0;
+    width: 100%;
+`;
+export const WrapperButtonComponent = styled(ButtonComponent)`
+    border-radius: 20px;
+    border: 1px solid ${gradClr1} !important;
+    background: ${gradClr2} !important;
+    color: #fff !important;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+`;
+export const WrapperButton = styled.button`
+    border-radius: 20px;
+    border: 1px solid ${gradClr1};
+    background: ${gradClr1};
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+`;
+export const WrapperOverlayBtn = styled.button`
+    cursor: pointer;
+    position: absolute;
+    left: 50%;
+    top: 304px;
+    transform: translateX(-50%);
+    width: 143.67px;
+    height: 40px;
+    border: 1px solid #fff;
+    background: transparent;
+    border-radius: 20px;
+
+    &.btnScaled {
+        animation: ${ScaleBtn} 0.3s;
+    }
+`;
+export const WrapperTitle = styled.h1`
+    font-size: 3rem;
+    font-weight: 700;
+`;
+export const WrapperAnchor = styled.a`
+    color: #333;
+    font-size: 1.4rem;
+    text-decoration: none;
+    margin: 15px 0;
+    font-weight: 500;
+`;
+export const WrapperOverlayContainer = styled.div`
+    position: absolute;
+    top: 0;
+    left: 60%;
+    width: 40%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 9;
+`;
+export const WrapperOverlay = styled.div`
+    position: relative;
+    background: ${linearGrad};
+    color: #fff;
+    left: -150%;
+    height: 100%;
+    width: 250%;
+    transition: transform 0.6s ease-in-out;
+`;
+
+export const WrapperOverlayPanel = styled.div`
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    text-align: center;
+    height: 100%;
+    width: 340px;
+    transition: 0.6s ease-in-out;
+
+    h1 {
+        color: #fff;
+    }
+    button {
+        border: none;
+        background-color: transparent;
+    }
+`;
+
+export const WrapperOverlayLeft = styled(WrapperOverlayPanel)`
+    right: 60%;
+    transform: translateX(-12%);
+`;
+
+export const WrapperOverlayRight = styled(WrapperOverlayPanel)`
+    right: 0;
+    transform: translateX(0%);
+`;
+export const WrapperText = styled.p`
+    font-size: 1.4rem;
+    font-weight: 300;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+    margin: 32px 0 35px;
 `;
