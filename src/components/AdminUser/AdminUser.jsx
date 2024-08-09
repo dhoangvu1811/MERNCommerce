@@ -37,20 +37,16 @@ const AdminUser = () => {
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
     const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
     const [stateUser, setStateUser] = useState({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        phone: '',
-        address: '',
-        image: '',
+        emailSignUp: '',
+        passwordSignUp: '',
+        confirmPasswordSignUp: '',
     });
     const [stateUserDetails, setStateUserDetails] = useState({
         name: '',
         email: '',
-        // password: '',
         phone: '',
         address: '',
+        city: '',
         image: '',
     });
 
@@ -73,6 +69,7 @@ const AdminUser = () => {
                 phone: res?.data?.phone,
                 address: res?.data?.address,
                 image: res?.data?.image,
+                city: res?.data?.city,
             });
         }
         setIsPendingUpdate(false);
@@ -88,7 +85,6 @@ const AdminUser = () => {
             fetchGetDetailsUser(rowSelected);
         }
     };
-    // console.log('rowSelected', rowSelected);
     const renderAction = () => {
         return (
             <div style={{ display: 'flex', gap: '20px' }}>
@@ -236,6 +232,10 @@ const AdminUser = () => {
             dataIndex: 'address',
         },
         {
+            title: 'City',
+            dataIndex: 'city',
+        },
+        {
             title: 'Admin',
             dataIndex: 'isAdmin',
             sorter: (a, b) => a.isAdmin.length - b.isAdmin.length,
@@ -255,6 +255,7 @@ const AdminUser = () => {
                 email: user.email,
                 phone: user.phone || '(trống)',
                 address: user.address || '(trống)',
+                city: user.city || '(trống)',
                 isAdmin: user.isAdmin ? 'Admin' : 'User',
             };
         });
@@ -371,7 +372,6 @@ const AdminUser = () => {
         });
     };
     const onUpdateUser = (values) => {
-        // console.log('stateUserDetails', stateUserDetails);
         mutationUpdate.mutate(
             {
                 id: rowSelected,
@@ -396,17 +396,6 @@ const AdminUser = () => {
         setStateUserDetails({
             ...stateUserDetails,
             [e.target.name]: e.target.value,
-        });
-    };
-    // Hàm xử lý khi thay đổi ảnh đại diện người dùng
-    const handleOnChangeAvatar = async ({ fileList }) => {
-        const file = fileList[0];
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj);
-        }
-        setStateUser({
-            ...stateUser,
-            image: file.preview,
         });
     };
     const handleOnChangeAvatarDetails = async ({ fileList }) => {
@@ -491,6 +480,9 @@ const AdminUser = () => {
             </div>
             <div style={{ marginTop: '20px' }}>
                 <TableComponent
+                    pagination={{
+                        pageSize: 5,
+                    }}
                     columns={columnTable}
                     data={dataTable}
                     isLoading={isLoadingUser}
@@ -534,25 +526,9 @@ const AdminUser = () => {
                         onFinish={onFinish}
                         autoComplete='off'
                     >
-                        {/* <WrapperForm.Item
-                            label='Tên người dùng'
-                            name='name'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Vui lòng nhâp tên người dùng!',
-                                },
-                            ]}
-                        >
-                            <InputForm
-                                value={stateUser.name}
-                                onChange={handleOnChange}
-                                name='name'
-                            />
-                        </WrapperForm.Item> */}
                         <WrapperForm.Item
                             label='Email'
-                            name='email'
+                            name='emailSignUp'
                             rules={[
                                 {
                                     required: true,
@@ -561,14 +537,14 @@ const AdminUser = () => {
                             ]}
                         >
                             <InputForm
-                                value={stateUser.email}
+                                value={stateUser.emailSignUp}
                                 onChange={handleOnChange}
-                                name='email'
+                                name='emailSignUp'
                             />
                         </WrapperForm.Item>
                         <WrapperForm.Item
                             label='Mật khẩu'
-                            name='password'
+                            name='passwordSignUp'
                             rules={[
                                 {
                                     required: true,
@@ -577,14 +553,14 @@ const AdminUser = () => {
                             ]}
                         >
                             <InputForm
-                                value={stateUser.password}
+                                value={stateUser.passwordSignUp}
                                 onChange={handleOnChange}
-                                name='password'
+                                name='passwordSignUp'
                             />
                         </WrapperForm.Item>
                         <WrapperForm.Item
                             label='Xác nhận mật khẩu'
-                            name='confirmPassword'
+                            name='confirmPasswordSignUp'
                             rules={[
                                 {
                                     required: true,
@@ -593,76 +569,11 @@ const AdminUser = () => {
                             ]}
                         >
                             <InputForm
-                                value={stateUser.password}
+                                value={stateUser.confirmPasswordSignUp}
                                 onChange={handleOnChange}
-                                name='confirmPassword'
+                                name='confirmPasswordSignUp'
                             />
                         </WrapperForm.Item>
-                        {/* <WrapperForm.Item
-                            label='Số điện thoại'
-                            name='phone'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Vui lòng nhập số điện thoại!',
-                                },
-                            ]}
-                        >
-                            <InputForm
-                                value={stateUser.phone}
-                                onChange={handleOnChange}
-                                name='phone'
-                            />
-                        </WrapperForm.Item>
-                        <WrapperForm.Item
-                            label='Địa chỉ'
-                            name='address'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Vui lòng nhập địa chỉ!',
-                                },
-                            ]}
-                        >
-                            <InputForm
-                                value={stateUser.address}
-                                onChange={handleOnChange}
-                                name='address'
-                            />
-                        </WrapperForm.Item>
-                        <WrapperForm.Item
-                            label='Ảnh đại diện'
-                            name='image'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Vui lòng thêm ảnh đại diện!',
-                                },
-                            ]}
-                        >
-                            <div>
-                                <WrapperUploadFile
-                                    maxCount={1}
-                                    onChange={handleOnChangeAvatar}
-                                >
-                                    <Button icon={<UploadOutlined />}>
-                                        Select File
-                                    </Button>
-                                </WrapperUploadFile>
-                                {stateUser.image && (
-                                    <img
-                                        src={stateUser.image}
-                                        alt='avatar'
-                                        style={{
-                                            height: '60px',
-                                            width: '60px',
-                                            borderRadius: '50%',
-                                            objectFit: 'cover',
-                                        }}
-                                    />
-                                )}
-                            </div>
-                        </WrapperForm.Item> */}
                         <WrapperForm.Item
                             wrapperCol={{
                                 offset: 8,
@@ -737,22 +648,6 @@ const AdminUser = () => {
                                 name='email'
                             />
                         </WrapperForm.Item>
-                        {/* <WrapperForm.Item
-                            label='Mật khẩu'
-                            name='password'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Vui lòng nhập mật khẩu!',
-                                },
-                            ]}
-                        >
-                            <InputForm
-                                value={stateUserDetails.password}
-                                onChange={handleOnChangeDetails}
-                                name='password'
-                            />
-                        </WrapperForm.Item> */}
                         <WrapperForm.Item
                             label='Số điện thoại'
                             name='phone'
@@ -783,6 +678,22 @@ const AdminUser = () => {
                                 value={stateUserDetails.address}
                                 onChange={handleOnChangeDetails}
                                 name='address'
+                            />
+                        </WrapperForm.Item>
+                        <WrapperForm.Item
+                            label='Thành phố'
+                            name='city'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập thành phố!',
+                                },
+                            ]}
+                        >
+                            <InputForm
+                                value={stateUserDetails.city}
+                                onChange={handleOnChangeDetails}
+                                name='city'
                             />
                         </WrapperForm.Item>
                         <WrapperForm.Item

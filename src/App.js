@@ -33,7 +33,6 @@ function App() {
         }
         return { decoded, accessTokenStorage };
     };
-
     // Add a request interceptor
     UserService.axiosJWT.interceptors.request.use(
         async function (config) {
@@ -49,7 +48,6 @@ function App() {
             return Promise.reject(error);
         }
     );
-
     // Hàm lấy thông tin user
     const handleGetDetailsUser = async (id, access_token) => {
         const res = await UserService.getDetailsUser(id, access_token);

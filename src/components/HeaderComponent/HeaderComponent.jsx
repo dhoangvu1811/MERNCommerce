@@ -101,7 +101,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                             onClick={() => navigate('/')}
                             style={{ cursor: 'pointer' }}
                         >
-                            THUCTAPTHUCTE
+                            E-COMMERCE
                         </WrapperTextHeader>
                     </Col>
                     {!isHiddenSearch && (

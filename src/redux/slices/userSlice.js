@@ -9,6 +9,7 @@ const initialState = {
     address: '',
     avatar: '',
     access_token: '',
+    city: '',
     isAdmin: false,
 };
 
@@ -26,6 +27,7 @@ export const userSlice = createSlice({
                 image = '',
                 _id = '',
                 access_token = '',
+                city = '',
                 isAdmin,
             } = action.payload;
             // console.log('action.payload', action.payload);
@@ -39,6 +41,7 @@ export const userSlice = createSlice({
             state.id = _id;
             state.access_token = access_token;
             state.isAdmin = isAdmin;
+            state.city = city;
         },
         logoutUser: (state) => {
             // Xóa thông tin user khỏi state global
@@ -48,6 +51,7 @@ export const userSlice = createSlice({
             state.address = '';
             state.avatar = '';
             state.id = '';
+            state.city = '';
             state.access_token = '';
             state.isAdmin = false;
         },

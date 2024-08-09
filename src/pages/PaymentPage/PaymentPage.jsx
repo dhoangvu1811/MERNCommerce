@@ -1,7 +1,5 @@
-import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import {
-    WrapperBtnQualityProduct,
     WrapperCountOrder,
     WrapperForm,
     WrapperInfo,
@@ -9,31 +7,32 @@ import {
     WrapperLeft,
     WrapperRight,
     WrapperTotal,
-} from './OrderPageStyle';
+} from './PaymentPageStyle';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     addShippingAddress,
-    decreaseAmount,
-    increaseAmount,
-    removeOrderProduct,
+    removeOrderAfterPayment,
 } from '../../redux/slices/OrderSlice';
-import TableOrderComponent from '../../components/TableOrderComponent/TableOrderComponent';
 import ModalComponent from '../../components/ModalComponent/ModalComponent';
 import InputForm from '../../components/InputForm/InputForm';
-import { Form, message } from 'antd';
+import { Form, message, Radio, Space } from 'antd';
 import { useMutationHook } from '../../hooks/useMutationHook';
 import * as UserService from '../../services/UserService';
+import * as OrderService from '../../services/OrderService';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import { updateUser } from '../../redux/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
 
-const OrderPage = () => {
+const PaymentPage = () => {
     const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
     const [formUpdate] = Form.useForm();
     const orders = useSelector((state) => state.order);
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const [valueShipping, setValueShipping] = useState(30000);
+    const [valueMethod, setValueMethod] = useState('default');
     const [isModalOpenModalUpdateInfo, setIsModalOpenModalUpdateInfo] =
         useState(false);
     const [stateUserInfoShipping, setStateUserInfoShipping] = useState({
@@ -42,6 +41,12 @@ const OrderPage = () => {
         address: '',
         city: '',
     });
+    const onChangeShipping = (e) => {
+        setValueShipping(e.target.value);
+    };
+    const onChangeMethod = (e) => {
+        setValueMethod(e.target.value);
+    };
     // Hàm lấy thông tin user
     const handleGetDetailsUser = async (id, access_token) => {
         const res = await UserService.getDetailsUser(id, access_token);
@@ -62,7 +67,21 @@ const OrderPage = () => {
         failureCount: failureCountUpdate,
     } = mutationUpdate;
 
-    const [messageApi, contextHolder] = message.useMessage();
+    // Hàm tạo order mới
+    const mutationAddOrder = useMutationHook((data) => {
+        const { id, token, ...rest } = data;
+        const res = OrderService.createOrder(id, token, rest);
+        return res;
+    });
+    const {
+        data: dataOrder,
+        isPending: isPendingOrderMutation,
+        isSuccess: isSuccessOrder,
+        isError: isErrorOrder,
+        failureReason: failureReasonOrder,
+        failureCount: failureCountOrder,
+    } = mutationAddOrder;
+
     // Hàm thông báo
     const success = (mes = 'Thành công') => {
         messageApi.open({
@@ -95,6 +114,7 @@ const OrderPage = () => {
         formUpdate.setFieldsValue(stateUserInfoShipping);
     }, [formUpdate, stateUserInfoShipping]);
 
+    //hàm thông báo khi thay đổi thông tin giao hàng thành công
     useEffect(() => {
         if (isSuccessUpdate) {
             success('Cập nhật thông tin giao hàng thành công');
@@ -104,47 +124,27 @@ const OrderPage = () => {
         }
     }, [isSuccessUpdate, isErrorUpdate]);
 
-    const handleChangeCount = (type, idProduct) => {
-        switch (type) {
-            case 'increase':
-                dispatch(increaseAmount({ idProduct: idProduct }));
-                break;
-            case 'decrease':
-                dispatch(decreaseAmount({ idProduct: idProduct }));
-                break;
-            default:
-                return;
+    //hàm thông báo khi đặt hàng thành công
+    useEffect(() => {
+        if (isSuccessOrder) {
+            dispatch(removeOrderAfterPayment());
+            success('Đặt hàng thành công');
+            setTimeout(() => {
+                navigate('/orderSuccess', {
+                    state: {
+                        shipping: valueShipping,
+                        method: valueMethod,
+                        order: orders?.orderItems,
+                        total: sumtotal + valueShipping,
+                        shipping: valueShipping,
+                    },
+                });
+            }, 1000);
+        } else if (failureCountOrder > 0) {
+            error(failureReasonOrder?.response?.data.message);
         }
-    };
-    const handleDeleteOrder = (idProduct) => {
-        dispatch(removeOrderProduct({ product: idProduct }));
-    };
-    const columns = [
-        {
-            title: `(Tất cả sản phẩm ${orders?.orderItems.length})`,
-            dataIndex: 'name',
-        },
-        {
-            title: 'Đơn giá',
-            dataIndex: 'price',
-        },
-        {
-            title: 'Giảm giá',
-            dataIndex: 'discount',
-        },
-        {
-            title: 'Số lượng',
-            dataIndex: 'amount',
-        },
-        {
-            title: 'Thành tiền',
-            dataIndex: 'total',
-        },
-        {
-            title: 'Xoá',
-            dataIndex: 'delete',
-        },
-    ];
+    }, [isSuccessOrder, isErrorOrder]);
+
     let sumtotal = 0;
     const data =
         orders?.orderItems?.length &&
@@ -205,22 +205,10 @@ const OrderPage = () => {
                 ),
                 amount: (
                     <WrapperCountOrder>
-                        <WrapperBtnQualityProduct
-                            onClick={() =>
-                                handleChangeCount('decrease', order?.product)
-                            }
-                            icon={<MinusOutlined color='#000' />}
-                        />
                         <WrapperInputNumber
                             defaultValue={order?.amount}
                             value={order?.amount}
                         ></WrapperInputNumber>
-                        <WrapperBtnQualityProduct
-                            onClick={() =>
-                                handleChangeCount('increase', order?.product)
-                            }
-                            icon={<PlusOutlined color='#000' />}
-                        />
                     </WrapperCountOrder>
                 ),
                 total: (
@@ -233,22 +221,33 @@ const OrderPage = () => {
                         {total.toLocaleString()}
                     </span>
                 ),
-                delete: (
-                    <DeleteOutlined
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleDeleteOrder(order?.product)}
-                    />
-                ),
             };
         });
-
-    const handleAddCart = (action) => {
-        if (action === 'addOrder' && !orders?.orderItems?.length) {
-            error('Vui lòng thêm sản phẩm vào giỏ hàng');
-        } else if (action === 'changeInfo') {
+    const handleChangeInfo = (action) => {
+        if (action === 'changeInfo') {
+            setIsModalOpenModalUpdateInfo(true);
+        }
+    };
+    const handleAddOrder = () => {
+        if (
+            orders?.shippingAddress?.name !== user?.name ||
+            !orders?.shippingAddress?.name
+        ) {
             setIsModalOpenModalUpdateInfo(true);
         } else {
-            navigate('/payment');
+            mutationAddOrder.mutate({
+                token: user?.access_token,
+                shippingPrice: valueShipping,
+                paymentMethod: valueMethod,
+                orderItems: orders?.orderItems,
+                name: orders?.shippingAddress?.name,
+                address: orders?.shippingAddress?.address,
+                city: orders?.shippingAddress?.city,
+                phone: orders?.shippingAddress?.phone,
+                totalPrice: sumtotal + valueShipping,
+                user: user?.id,
+                id: user?.id,
+            });
         }
     };
     const handleCancelUpdateInfo = () => {
@@ -295,13 +294,71 @@ const OrderPage = () => {
                         margin: '0 auto',
                     }}
                 >
-                    <h3>Giỏ hàng</h3>
+                    <h3>Thanh toán</h3>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <WrapperLeft>
-                            <TableOrderComponent
-                                dataTable={data}
-                                columnsTable={columns}
-                            />
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                }}
+                            >
+                                <WrapperInfo>
+                                    <h4>Chọn phương thức giao hàng</h4>
+                                    <div
+                                        style={{
+                                            border: '1px solid rgb(194, 225, 255)',
+                                            background: 'rgb(240, 248, 255)',
+                                            width: '497px',
+                                            padding: '16px',
+                                            borderRadius: '10px',
+                                        }}
+                                    >
+                                        <Radio.Group
+                                            onChange={onChangeShipping}
+                                            value={valueShipping}
+                                        >
+                                            <Space direction='vertical'>
+                                                <Radio value={30000}>
+                                                    Giao hàng hoả tốc
+                                                </Radio>
+                                                <Radio value={15000}>
+                                                    Giao hàng tiết kiệm
+                                                </Radio>
+                                            </Space>
+                                        </Radio.Group>
+                                    </div>
+                                </WrapperInfo>
+                                <WrapperInfo>
+                                    <h4>Chọn phương thức thanh toán</h4>
+                                    <div
+                                        style={{
+                                            border: '1px solid rgb(194, 225, 255)',
+                                            background: 'rgb(240, 248, 255)',
+                                            width: '497px',
+                                            padding: '16px',
+                                            borderRadius: '10px',
+                                        }}
+                                    >
+                                        <Radio.Group
+                                            onChange={onChangeMethod}
+                                            value={valueMethod}
+                                        >
+                                            <Space direction='vertical'>
+                                                <Radio value={'default'}>
+                                                    Thanh toán khi nhận hàng
+                                                </Radio>
+                                                <Radio value={'momo'}>
+                                                    Thanh toán bằng Momo
+                                                </Radio>
+                                                <Radio value={'paypal'}>
+                                                    Thanh toán bằng Paypal
+                                                </Radio>
+                                            </Space>
+                                        </Radio.Group>
+                                    </div>
+                                </WrapperInfo>
+                            </div>
                         </WrapperLeft>
                         <WrapperRight>
                             <div style={{ width: '100%' }}>
@@ -324,9 +381,9 @@ const OrderPage = () => {
                                                 >{`${user?.city} - ${user?.address}`}</span>
                                             </span>
                                         </div>
-                                        {/* <span
+                                        <span
                                             onClick={() =>
-                                                handleAddCart('changeInfo')
+                                                handleChangeInfo('changeInfo')
                                             }
                                             style={{
                                                 color: 'blue',
@@ -334,7 +391,7 @@ const OrderPage = () => {
                                             }}
                                         >
                                             Thay đổi
-                                        </span> */}
+                                        </span>
                                     </div>
                                 </WrapperInfo>
                                 <WrapperInfo>
@@ -356,6 +413,24 @@ const OrderPage = () => {
                                             {sumtotal.toLocaleString()}đ
                                         </span>
                                     </div>
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            fontSize: '1.4rem',
+                                        }}
+                                    >
+                                        <span>Phí giao hàng</span>
+                                        <span
+                                            style={{
+                                                color: '#000',
+                                                fontWeight: '400',
+                                            }}
+                                        >
+                                            {valueShipping.toLocaleString()}đ
+                                        </span>
+                                    </div>
                                 </WrapperInfo>
                                 <WrapperTotal>
                                     <span style={{ fontSize: '1.4rem' }}>
@@ -374,7 +449,9 @@ const OrderPage = () => {
                                             }}
                                         >
                                             {sumtotal
-                                                ? sumtotal.toLocaleString()
+                                                ? (
+                                                      sumtotal + valueShipping
+                                                  ).toLocaleString()
                                                 : 0}
                                             đ
                                         </span>
@@ -389,23 +466,27 @@ const OrderPage = () => {
                                     </span>
                                 </WrapperTotal>
                             </div>
-                            <ButtonComponent
-                                onClick={() => handleAddCart('addOrder')}
-                                size={40}
-                                styleButton={{
-                                    background: 'rgb(255,57,69)',
-                                    height: '48px',
-                                    width: '220px',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                }}
-                                textButton={'Mua hàng'}
-                                styleTextButton={{
-                                    color: '#fff',
-                                    fontSize: '1.5rem',
-                                    fontWeight: '400',
-                                }}
-                            ></ButtonComponent>
+                            <LoadingComponent
+                                isPending={isPendingOrderMutation}
+                            >
+                                <ButtonComponent
+                                    onClick={() => handleAddOrder()}
+                                    size={40}
+                                    styleButton={{
+                                        background: 'rgb(255,57,69)',
+                                        height: '48px',
+                                        width: '220px',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                    }}
+                                    textButton={'Đặt hàng'}
+                                    styleTextButton={{
+                                        color: '#fff',
+                                        fontSize: '1.5rem',
+                                        fontWeight: '400',
+                                    }}
+                                ></ButtonComponent>
+                            </LoadingComponent>
                         </WrapperRight>
                     </div>
                 </div>
@@ -508,4 +589,4 @@ const OrderPage = () => {
     );
 };
 
-export default OrderPage;
+export default PaymentPage;

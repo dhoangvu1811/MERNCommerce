@@ -4,11 +4,12 @@ import OrderPage from '../pages/OrderPage/OrderPage';
 import ProductsPage from '../pages/ProductsPage/ProductsPage';
 import NotHeaderComponent from '../components/NotHeaderComponent/NotHeaderComponent';
 import TypeProductPage from '../pages/TypeProductPage/TypeProductPage';
-import SignUpPage from '../pages/SignUpPage/SignUpPage';
 import SignInPage from '../pages/SignInPage/SignInPage';
 import ProductDetailPage from '../pages/ProductDetailPage/ProductDetailPage';
 import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import AdminPage from '../pages/AdminPage/AdminPage';
+import PaymentPage from '../pages/PaymentPage/PaymentPage';
+import OrderSuccess from '../pages/OrderSuccess/OrderSuccess';
 
 export const routes = [
     {
@@ -20,17 +21,20 @@ export const routes = [
         component: OrderPage,
     },
     {
+        path: '/payment',
+        component: PaymentPage,
+    },
+    {
+        path: '/orderSuccess',
+        component: OrderSuccess,
+    },
+    {
         path: '/products',
         component: ProductsPage,
     },
     {
         path: '/product/:type',
         component: TypeProductPage,
-    },
-    {
-        path: '/sign-up',
-        component: SignUpPage,
-        layout: NotHeaderComponent,
     },
     {
         path: '/sign-in',

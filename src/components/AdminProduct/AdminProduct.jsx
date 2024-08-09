@@ -45,6 +45,7 @@ const AdminProduct = () => {
         description: '',
         image: '',
         newType: '',
+        discount: '',
     });
     const [stateProductDetails, setStateProductDetails] = useState({
         name: '',
@@ -55,6 +56,7 @@ const AdminProduct = () => {
         description: '',
         image: '',
         newType: '',
+        discount: '',
     });
 
     // Hàm lấy dữ liệu sản phẩm từ api
@@ -75,6 +77,7 @@ const AdminProduct = () => {
                 rating: res?.data?.rating,
                 description: res?.data?.description,
                 image: res?.data?.image,
+                discount: res?.data?.discount,
             });
         }
         setIsPendingUpdate(false);
@@ -304,6 +307,10 @@ const AdminProduct = () => {
             dataIndex: 'description',
         },
         {
+            title: 'Discount',
+            dataIndex: 'discount',
+        },
+        {
             title: 'Action',
             dataIndex: 'action',
             render: renderAction,
@@ -320,10 +327,9 @@ const AdminProduct = () => {
                 type: product.type,
                 countInStock: product.countInStock,
                 description: product.description,
-                action: product.action,
+                discount: product.discount,
             };
         });
-
     // Hàm thêm sản phẩm
     const mutation = useMutationHook((data) => {
         const res = ProductService.createProduct(data);
@@ -441,6 +447,7 @@ const AdminProduct = () => {
             rating: stateProduct.rating,
             description: stateProduct.description,
             image: stateProduct.image,
+            discount: stateProduct.discount,
         };
         mutation.mutate(data, {
             onSettled: () => {
@@ -460,6 +467,7 @@ const AdminProduct = () => {
             rating: stateProductDetails.rating,
             description: stateProductDetails.description,
             image: stateProductDetails.image,
+            discount: stateProductDetails.discount,
         };
         mutationUpdate.mutate(
             {
@@ -558,6 +566,7 @@ const AdminProduct = () => {
     useEffect(() => {
         formUpdate.setFieldsValue(stateProductDetails);
     }, [formUpdate, stateProductDetails]);
+
     return (
         <div>
             {contextHolder}
@@ -577,6 +586,9 @@ const AdminProduct = () => {
             </div>
             <div style={{ marginTop: '20px' }}>
                 <TableComponent
+                    pagination={{
+                        pageSize: 5,
+                    }}
                     columns={columnTable}
                     data={dataTable}
                     isLoading={isLoadingProduct}
@@ -730,6 +742,22 @@ const AdminProduct = () => {
                                 value={stateProduct.description}
                                 onChange={handleOnChange}
                                 name='description'
+                            />
+                        </WrapperForm.Item>
+                        <WrapperForm.Item
+                            label='Giảm giá'
+                            name='discount'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập giảm giá!',
+                                },
+                            ]}
+                        >
+                            <InputForm
+                                value={stateProduct.discount}
+                                onChange={handleOnChange}
+                                name='discount'
                             />
                         </WrapperForm.Item>
                         <WrapperForm.Item
@@ -919,6 +947,22 @@ const AdminProduct = () => {
                                 value={stateProductDetails.description}
                                 onChange={handleOnChangeDetails}
                                 name='description'
+                            />
+                        </WrapperForm.Item>
+                        <WrapperForm.Item
+                            label='Giảm giá'
+                            name='discount'
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập giảm giá!',
+                                },
+                            ]}
+                        >
+                            <InputForm
+                                value={stateProductDetails.discount}
+                                onChange={handleOnChangeDetails}
+                                name='discount'
                             />
                         </WrapperForm.Item>
                         <WrapperForm.Item

@@ -76,11 +76,7 @@ const ProductDetailComponent = ({ idProduct }) => {
                         image: productDetail?.image,
                         price: productDetail?.price,
                         product: productDetail?._id,
-                    },
-                    shippingAddress: {
-                        fullName: user?.name,
-                        address: user?.address,
-                        phone: user?.phone,
+                        discount: productDetail?.discount,
                     },
                 })
             );

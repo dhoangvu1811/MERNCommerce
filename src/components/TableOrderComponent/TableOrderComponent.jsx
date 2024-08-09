@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { removeAllOrderProduct } from '../../redux/slices/OrderSlice';
 
 const TableOrderComponent = (props) => {
+    const { dataTable, columnsTable, OrderSuccess } = props;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const dispatch = useDispatch();
@@ -19,7 +20,6 @@ const TableOrderComponent = (props) => {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-    const { dataTable, columnsTable } = props;
     // rowSelection object indicates the need for row selection
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -37,9 +37,7 @@ const TableOrderComponent = (props) => {
                 Bạn có muốn xoá các sản phẩm đã chọn không?
             </Modal>
             <Table
-                rowSelection={{
-                    ...rowSelection,
-                }}
+                rowSelection={OrderSuccess ? false : rowSelection}
                 columns={columnsTable}
                 dataSource={dataTable}
                 pagination={false}

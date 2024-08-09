@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 import * as UserService from '../../services/UserService.js';
 import { useMutationHook } from '../../hooks/useMutationHook.js';
 import { Button, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
 import { getBase64 } from '../../until.js';
 
@@ -21,6 +20,7 @@ const ProfilePage = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
     const [phone, setPhone] = useState('');
     const [avatar, setAvatar] = useState('');
 
@@ -47,7 +47,6 @@ const ProfilePage = () => {
     });
     const { data, isPending, isSuccess, isError, failureCount, failureReason } =
         mutation;
-    console.log('mutation', mutation);
 
     useEffect(() => {
         setEmail(user?.email);
@@ -55,6 +54,7 @@ const ProfilePage = () => {
         setAddress(user?.address);
         setPhone(user?.phone);
         setAvatar(user?.avatar);
+        setCity(user?.city);
     }, [user]);
 
     useEffect(() => {
@@ -76,6 +76,9 @@ const ProfilePage = () => {
     const handleOnChangeAddress = (e) => {
         setAddress(e.target.value);
     };
+    const handleOnChangeCity = (e) => {
+        setCity(e.target.value);
+    };
     const handleOnChangePhone = (e) => {
         setPhone(e.target.value);
     };
@@ -96,6 +99,7 @@ const ProfilePage = () => {
             email,
             name,
             address,
+            city,
             phone,
             image: avatar,
         });
@@ -158,7 +162,17 @@ const ProfilePage = () => {
                             onChange={handleOnChangeAddress}
                             id='address'
                             style={{ width: '300px' }}
-                            placeholder={'Quảng Nam'}
+                            placeholder={'Hội An, Quảng Nam'}
+                        />
+                    </WrapperInput>
+                    <WrapperInput>
+                        <WrapperLabel htmlFor='city'>Thành phố</WrapperLabel>
+                        <InputForm
+                            value={city}
+                            onChange={handleOnChangeCity}
+                            id='city'
+                            style={{ width: '300px' }}
+                            placeholder={'Đà Nẵng'}
                         />
                     </WrapperInput>
                     <WrapperInput>

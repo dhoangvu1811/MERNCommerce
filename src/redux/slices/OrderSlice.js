@@ -6,7 +6,6 @@ const initialState = {
     paymentMethod: '',
     itemsPrice: 0,
     shippingPrice: 0,
-    taxPrice: 0,
     totalPrice: 0,
     user: '',
     ispaid: false,
@@ -19,7 +18,7 @@ export const orderSlice = createSlice({
     initialState,
     reducers: {
         addOrderProduct: (state, action) => {
-            const { orderItem, shippingAddress } = action.payload;
+            const { orderItem } = action.payload;
             const itemOrder = state?.orderItems.find(
                 (item) => item?.product === orderItem?.product
             );
@@ -29,8 +28,11 @@ export const orderSlice = createSlice({
                 itemOrder.amount += orderItem?.amount;
             } else {
                 state.orderItems.push(orderItem);
-                state.shippingAddress = shippingAddress;
             }
+        },
+        addShippingAddress: (state, action) => {
+            const { shippingAddress } = action.payload;
+            state.shippingAddress = shippingAddress;
         },
         increaseAmount: (state, action) => {
             const { idProduct } = action.payload;
@@ -63,6 +65,11 @@ export const orderSlice = createSlice({
                 //trả về những sản phẩm không nằm trong mảng products
                 (item) => !products.includes(item?.product)
             );
+            state.shippingAddress = {};
+        },
+        removeOrderAfterPayment: (state) => {
+            state.orderItems = [];
+            state.shippingAddress = {};
         },
     },
 });
@@ -73,6 +80,8 @@ export const {
     decreaseAmount,
     removeOrderProduct,
     removeAllOrderProduct,
+    addShippingAddress,
+    removeOrderAfterPayment,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

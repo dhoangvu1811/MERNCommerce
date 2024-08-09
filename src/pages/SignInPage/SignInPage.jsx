@@ -59,10 +59,9 @@ const SignInPage = () => {
         failureCount: failureCountSignIn,
         failureReason: failureReasonSignIn,
     } = mutationSignIn;
-
     useEffect(() => {
         if (isSuccessSignIn) {
-            success();
+            success(dataSignIn?.message);
             if (location?.state) {
                 setTimeout(() => {
                     navigate(location?.state);
@@ -80,7 +79,6 @@ const SignInPage = () => {
             if (dataSignIn?.access_token) {
                 // giải mã token
                 const decoded = jwtDecode(dataSignIn?.access_token);
-
                 // Lấy thông tin user từ token giải mã được và access_token để gọi api
                 if (decoded?.id) {
                     handleGetDetailsUser(decoded?.id, dataSignIn?.access_token);
@@ -144,7 +142,7 @@ const SignInPage = () => {
 
     useEffect(() => {
         if (isSuccessSignUp) {
-            success();
+            success(dataSignUp?.message);
             setEmailSignUp('');
             setPasswordSignUp('');
             setConfirmPasswordSignUp('');
@@ -169,8 +167,8 @@ const SignInPage = () => {
             confirmPasswordSignUp,
         });
     };
-    const [isRightPanelActive, setIsRightPanelActive] = useState(false);
 
+    // Hàm chuyển đổi giữa form đăng nhập và form đăng ký
     useEffect(() => {
         const container = document.getElementById('container');
         const overlaycon = document.getElementById('overlayCon');
