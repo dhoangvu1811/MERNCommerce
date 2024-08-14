@@ -10,6 +10,8 @@ import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import AdminPage from '../pages/AdminPage/AdminPage';
 import PaymentPage from '../pages/PaymentPage/PaymentPage';
 import OrderSuccess from '../pages/OrderSuccess/OrderSuccess';
+import MyOrderPage from '../pages/MyOrderPage/MyOrderPage';
+import DetailsOrderPage from '../pages/DetailsOrderPage/DetailsOrderPage';
 
 export const routes = [
     {
@@ -19,6 +21,14 @@ export const routes = [
     {
         path: '/order',
         component: OrderPage,
+    },
+    {
+        path: '/myOrder',
+        component: MyOrderPage,
+    },
+    {
+        path: '/detailsOrder/:idOrder',
+        component: DetailsOrderPage,
     },
     {
         path: '/payment',

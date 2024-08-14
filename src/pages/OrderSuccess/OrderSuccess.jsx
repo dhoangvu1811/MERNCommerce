@@ -11,16 +11,15 @@ import { useSelector } from 'react-redux';
 import { message } from 'antd';
 import TableOrderComponent from '../../components/TableOrderComponent/TableOrderComponent';
 import { useLocation } from 'react-router-dom';
+import StepComponent from '../../components/StepComponent/StepComponent';
 
 const OrderSuccess = () => {
     const [messageApi, contextHolder] = message.useMessage();
-    const orders = useSelector((state) => state.order);
     const user = useSelector((state) => state.user);
     const location = useLocation();
-    console.log('location', location);
     const columns = [
         {
-            title: `(Tất cả sản phẩm ${orders?.orderItems.length})`,
+            title: `( ${location?.state?.order?.length} sản phẩm)`,
             dataIndex: 'name',
         },
         {
@@ -139,6 +138,20 @@ const OrderSuccess = () => {
                 return ' khi nhận hàng';
         }
     };
+    const items = [
+        {
+            title: 'Thêm sản phẩm vào giỏ hàng',
+            description: '',
+        },
+        {
+            title: 'Đặt hàng',
+            description: '',
+        },
+        {
+            title: 'Đặt hàng thành công',
+            description: '',
+        },
+    ];
     return (
         <>
             {contextHolder}
@@ -159,6 +172,9 @@ const OrderSuccess = () => {
                     <h3>Danh sách các sản phẩm đã đặt thành công</h3>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <WrapperContainer>
+                            <WrapperInfo>
+                                <StepComponent items={items} current={3} />
+                            </WrapperInfo>
                             <div
                                 style={{
                                     display: 'flex',

@@ -19,7 +19,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as UserService from '../../services/UserService';
 import { logoutUser } from '../../redux/slices/userSlice';
 import { searchProduct } from '../../redux/slices/ProductSlice';
-import styled from 'styled-components';
 
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const orderProduct = useSelector((state) => state.order);
@@ -61,6 +60,9 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         <div>
             <WrapperContentPopup onClick={() => navigate('/profile-user')}>
                 Thông tin người dùng
+            </WrapperContentPopup>
+            <WrapperContentPopup onClick={() => navigate('/myOrder')}>
+                Đơn hàng của tôi
             </WrapperContentPopup>
 
             {user?.isAdmin && (

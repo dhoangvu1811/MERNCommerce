@@ -23,6 +23,7 @@ import * as OrderService from '../../services/OrderService';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 import { updateUser } from '../../redux/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
+import StepComponent from '../../components/StepComponent/StepComponent';
 
 const PaymentPage = () => {
     const navigate = useNavigate();
@@ -277,6 +278,20 @@ const PaymentPage = () => {
             error('Vui lòng thêm sản phẩm vào giỏ hàng');
         }
     };
+    const items = [
+        {
+            title: 'Thêm sản phẩm vào giỏ hàng',
+            description: '',
+        },
+        {
+            title: 'Đặt hàng',
+            description: '',
+        },
+        {
+            title: 'Đặt hàng thành công',
+            description: '',
+        },
+    ];
     return (
         <>
             {contextHolder}
@@ -297,6 +312,9 @@ const PaymentPage = () => {
                     <h3>Thanh toán</h3>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <WrapperLeft>
+                            <WrapperInfo>
+                                <StepComponent items={items} current={2} />
+                            </WrapperInfo>
                             <div
                                 style={{
                                     display: 'flex',
