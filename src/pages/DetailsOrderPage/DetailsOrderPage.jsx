@@ -13,6 +13,7 @@ import { message } from 'antd';
 import * as OrderService from '../../services/OrderService';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
 
 const DetailsOrderPage = () => {
     const navigate = useNavigate();
@@ -171,124 +172,134 @@ const DetailsOrderPage = () => {
     return (
         <>
             {contextHolder}
-            <div
-                style={{
-                    background: '#f5f5fa',
-                    width: '100%',
-                    height: '100vh',
-                }}
-            >
+            <LoadingComponent isPending={isPending}>
                 <div
                     style={{
-                        height: '100%',
-                        width: '1270px',
-                        margin: '0 auto',
+                        background: '#f5f5fa',
+                        width: '100%',
+                        height: '100vh',
                     }}
                 >
-                    <h3>Chi tiết đơn hàng</h3>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <WrapperLeft>
-                            <TableOrderComponent
-                                dataTable={data}
-                                columnsTable={columns}
-                                OrderSuccess={true}
-                            />
-                        </WrapperLeft>
-                        <WrapperRight>
-                            <div style={{ width: '100%' }}>
-                                <WrapperInfo>
-                                    <div>
-                                        <span style={{ fontSize: '2rem' }}>
-                                            Thông tin giao hàng
-                                        </span>
+                    <div
+                        style={{
+                            height: '100%',
+                            width: '1270px',
+                            margin: '0 auto',
+                        }}
+                    >
+                        <h3>Chi tiết đơn hàng</h3>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <WrapperLeft>
+                                <TableOrderComponent
+                                    dataTable={data}
+                                    columnsTable={columns}
+                                    OrderSuccess={true}
+                                />
+                            </WrapperLeft>
+                            <WrapperRight>
+                                <div style={{ width: '100%' }}>
+                                    <WrapperInfo>
+                                        <div>
+                                            <span style={{ fontSize: '2rem' }}>
+                                                Thông tin giao hàng
+                                            </span>
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    fontSize: '1.4rem',
+                                                    flexDirection: 'column',
+                                                }}
+                                            >
+                                                <span>
+                                                    Địa chỉ nhận hàng:
+                                                    <span
+                                                        style={{
+                                                            fontWeight:
+                                                                'bolder',
+                                                            marginLeft: '5px',
+                                                        }}
+                                                    >{`${orderData?.data?.shippingAddress?.city} - ${orderData?.data?.shippingAddress?.address}`}</span>
+                                                </span>
+                                                <span>
+                                                    Số điện thoại:
+                                                    <span
+                                                        style={{
+                                                            fontWeight:
+                                                                'bolder',
+                                                            marginLeft: '5px',
+                                                        }}
+                                                    >{`${orderData?.data?.shippingAddress?.phone}`}</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </WrapperInfo>
+                                    <WrapperInfo>
                                         <div
                                             style={{
                                                 display: 'flex',
-                                                fontSize: '1.4rem',
                                                 flexDirection: 'column',
                                             }}
                                         >
-                                            <span>
-                                                Địa chỉ nhận hàng:
-                                                <span
-                                                    style={{
-                                                        fontWeight: 'bolder',
-                                                        marginLeft: '5px',
-                                                    }}
-                                                >{`${orderData?.data?.shippingAddress?.city} - ${orderData?.data?.shippingAddress?.address}`}</span>
+                                            <span style={{ fontSize: '2rem' }}>
+                                                Hình thức thanh toán
                                             </span>
-                                            <span>
-                                                Số điện thoại:
-                                                <span
-                                                    style={{
-                                                        fontWeight: 'bolder',
-                                                        marginLeft: '5px',
-                                                    }}
-                                                >{`${orderData?.data?.shippingAddress?.phone}`}</span>
+                                            <span
+                                                style={{
+                                                    color: '#000',
+                                                    fontWeight: '400',
+                                                    fontSize: '1.4rem',
+                                                }}
+                                            >
+                                                {handleMethodPayment(
+                                                    orderData?.data
+                                                        ?.paymentMethod
+                                                )}
+                                            </span>
+                                            <span
+                                                style={{
+                                                    color: '#d5ae9d',
+                                                    fontSize: '1.5rem',
+                                                }}
+                                            >
+                                                Chưa thanh toán
                                             </span>
                                         </div>
-                                    </div>
-                                </WrapperInfo>
-                                <WrapperInfo>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                        }}
-                                    >
-                                        <span style={{ fontSize: '2rem' }}>
-                                            Hình thức thanh toán
-                                        </span>
-                                        <span
+                                    </WrapperInfo>
+                                    <WrapperInfo>
+                                        <div
                                             style={{
-                                                color: '#000',
-                                                fontWeight: '400',
-                                                fontSize: '1.4rem',
+                                                display: 'flex',
+                                                flexDirection: 'column',
                                             }}
                                         >
-                                            {handleMethodPayment(
-                                                orderData?.data?.paymentMethod
-                                            )}
-                                        </span>
-                                        <span
-                                            style={{
-                                                color: '#d5ae9d',
-                                                fontSize: '1.5rem',
-                                            }}
-                                        >
-                                            Chưa thanh toán
-                                        </span>
-                                    </div>
-                                </WrapperInfo>
-                                <WrapperInfo>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                        }}
-                                    >
-                                        <span style={{ fontSize: '2rem' }}>
-                                            Hình thức giao hàng
-                                        </span>
-                                        <span
-                                            style={{
-                                                color: '#000',
-                                                fontWeight: '400',
-                                                fontSize: '1.4rem',
-                                            }}
-                                        >
-                                            {orderData?.data?.shippingPrice ===
-                                            30000
-                                                ? 'Giao hàng hoả tốc'
-                                                : 'Giao hàng tiết kiệm'}
-                                        </span>
-                                    </div>
-                                </WrapperInfo>
-                            </div>
-                        </WrapperRight>
+                                            <span style={{ fontSize: '2rem' }}>
+                                                Hình thức giao hàng
+                                            </span>
+                                            <span
+                                                style={{
+                                                    color: '#000',
+                                                    fontWeight: '400',
+                                                    fontSize: '1.4rem',
+                                                }}
+                                            >
+                                                {orderData?.data
+                                                    ?.shippingPrice === 30000
+                                                    ? 'Giao hàng hoả tốc'
+                                                    : 'Giao hàng tiết kiệm'}
+                                            </span>
+                                        </div>
+                                    </WrapperInfo>
+                                </div>
+                            </WrapperRight>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </LoadingComponent>
         </>
     );
 };

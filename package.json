@@ -23,6 +23,8 @@
         "react-router-dom": "^6.25.1",
         "react-scripts": "5.0.1",
         "react-slick": "^0.30.2",
+        "reactjsbanhang": "file:",
+        "recharts": "^2.12.7",
         "redux-persist": "^6.0.0",
         "slick-carousel": "^1.8.1",
         "styled-components": "^6.1.11",

@@ -1,24 +1,22 @@
 import { DeleteOutlined, InfoCircleFilled } from '@ant-design/icons';
-import React from 'react';
-import {
-    WrapperCountOrder,
-    WrapperInputNumber,
-    WrapperLeft,
-} from './MyOrderPageStyle';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { WrapperLeft } from './MyOrderPageStyle';
+import { useSelector } from 'react-redux';
 import TableOrderComponent from '../../components/TableOrderComponent/TableOrderComponent';
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import * as OrderService from '../../services/OrderService';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent';
+import { useMutationHook } from '../../hooks/useMutationHook';
 
 const MyOrderPage = () => {
     const navigate = useNavigate();
     const orders = useSelector((state) => state.order);
     const user = useSelector((state) => state.user);
-    const dispatch = useDispatch();
     const [messageApi, contextHolder] = message.useMessage();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [stateIdOrder, setStateIdOrder] = useState('');
 
     // Hàm lấy thông tin order
     const handleGetDetailsOrder = async (id, access_token) => {
@@ -32,7 +30,46 @@ const MyOrderPage = () => {
         enabled: !!(user?.id && user?.access_token),
     });
     const { isPending, data: orderData } = queryOrder;
-    console.log('orderData', orderData?.data);
+
+    // Hàm huỷ đơn hàng
+    const mutationCancelOrder = useMutationHook((data) => {
+        const { idOrder, token, idUser } = data;
+        const res = OrderService.cancelOrder(idOrder, token, idUser);
+        return res;
+    });
+    const {
+        data: dataCancelOrder,
+        isPending: isPendingCancelOrderMutation,
+        isSuccess: isSuccessCancelOrder,
+        isError: isErrorCancelOrder,
+        failureReason: failureReasonCancelOrder,
+        failureCount: failureCountCancelOrder,
+    } = mutationCancelOrder;
+
+    const showModal = (idOrder) => {
+        setIsModalOpen(true);
+        setStateIdOrder(idOrder);
+    };
+
+    const handleOk = () => {
+        mutationCancelOrder.mutate(
+            {
+                idOrder: stateIdOrder,
+                token: user?.access_token,
+                idUser: user?.id,
+            },
+            {
+                onSettled: () => {
+                    queryOrder.refetch();
+                },
+            }
+        );
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     // Hàm thông báo
     const success = (mes = 'Thành công') => {
         messageApi.open({
@@ -150,7 +187,7 @@ const MyOrderPage = () => {
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <DeleteOutlined
                             style={{ cursor: 'pointer' }}
-                            // onClick={() => handleDeleteOrder(order?.product)}
+                            onClick={() => showModal(order?._id)}
                         />
                         <InfoCircleFilled
                             style={{ cursor: 'pointer' }}
@@ -162,6 +199,14 @@ const MyOrderPage = () => {
                 ),
             };
         });
+    useEffect(() => {
+        if (isSuccessCancelOrder) {
+            success('Huỷ đơn hàng thành công');
+            handleCancel();
+        } else if (failureCountCancelOrder.length > 0) {
+            error(failureReasonCancelOrder?.response?.data.message);
+        }
+    }, [isErrorCancelOrder, isSuccessCancelOrder]);
     return (
         <>
             {contextHolder}
@@ -191,11 +236,22 @@ const MyOrderPage = () => {
                                 <TableOrderComponent
                                     dataTable={data}
                                     columnsTable={columns}
+                                    OrderSuccess={true}
                                 />
                             </WrapperLeft>
                         </div>
                     </div>
                 </div>
+            </LoadingComponent>
+            <LoadingComponent isPending={isPendingCancelOrderMutation}>
+                <Modal
+                    title='Huỷ đơn hàng'
+                    open={isModalOpen}
+                    onOk={handleOk}
+                    onCancel={handleCancel}
+                >
+                    Bạn có muốn huỷ đơn hàng này không?
+                </Modal>
             </LoadingComponent>
         </>
     );

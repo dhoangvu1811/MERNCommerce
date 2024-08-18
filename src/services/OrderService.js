@@ -34,3 +34,26 @@ export const getDetailsOrder = async (idOrder, access_token, idUser) => {
     );
     return res.data;
 };
+export const cancelOrder = async (idOrder, access_token, idUser) => {
+    const res = await axiosJWT.delete(
+        `${process.env.REACT_APP_API_URL}/order/cancelOrder/${idUser}?idOrder=${idOrder}`,
+        {
+            headers: {
+                token: `Bearer ${access_token}`,
+            },
+        }
+    );
+    return res.data;
+};
+
+export const getAllOrderAdmin = async (access_token) => {
+    const res = await axiosJWT.get(
+        `${process.env.REACT_APP_API_URL}/order/getAllOrderAdmin`,
+        {
+            headers: {
+                token: `Bearer ${access_token}`,
+            },
+        }
+    );
+    return res.data;
+};

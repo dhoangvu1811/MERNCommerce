@@ -1,6 +1,6 @@
 import {
     AppstoreOutlined,
-    SettingOutlined,
+    ShoppingCartOutlined,
     UserOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
@@ -9,6 +9,7 @@ import { getLevelKeys } from '../../until';
 import HeaderComponent from '../../components/HeaderComponent/HeaderComponent';
 import AdminUser from '../../components/AdminUser/AdminUser';
 import AdminProduct from '../../components/AdminProduct/AdminProduct';
+import AdminOrder from '../../components/AdminOrder/AdminOrder';
 const items = [
     {
         key: '1',
@@ -22,8 +23,8 @@ const items = [
     },
     {
         key: '3',
-        icon: <SettingOutlined />,
-        label: 'Cài đặt',
+        icon: <ShoppingCartOutlined />,
+        label: 'Đơn hàng',
     },
 ];
 
@@ -36,6 +37,8 @@ const AdminPage = () => {
                 return <AdminUser />;
             case '2':
                 return <AdminProduct />;
+            case '3':
+                return <AdminOrder />;
             default:
                 return <></>;
         }
