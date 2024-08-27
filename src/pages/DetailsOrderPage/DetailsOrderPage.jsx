@@ -41,7 +41,7 @@ const DetailsOrderPage = () => {
         enabled: !!(idOrder && user?.access_token),
     });
     const { isPending, data: orderData } = queryOrder;
-    console.log('orderData', orderData?.data);
+    console.log('orderData', orderData);
     // Hàm thông báo
     const success = (mes = 'Thành công') => {
         messageApi.open({
@@ -266,7 +266,9 @@ const DetailsOrderPage = () => {
                                                     fontSize: '1.5rem',
                                                 }}
                                             >
-                                                Chưa thanh toán
+                                                {orderData?.data?.ispaid
+                                                    ? 'Đã thanh toán'
+                                                    : 'Chưa thanh toán'}
                                             </span>
                                         </div>
                                     </WrapperInfo>

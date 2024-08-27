@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistGate } from 'redux-persist/integration/react';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // Create a client
@@ -18,7 +19,15 @@ root.render(
     <QueryClientProvider client={queryClient}>
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-                <App />
+                <PayPalScriptProvider
+                    options={{
+                        clientId:
+                            'AUfwNDOWbRHHmKO264ZYSEiH0JonzDYn-SGESr8_p_8voGURHrXi6sL1YiWTNnkj2uiYWEDk951DiEGe',
+                        currency: 'USD',
+                    }}
+                >
+                    <App />
+                </PayPalScriptProvider>
             </PersistGate>
         </Provider>
         <ReactQueryDevtools initialIsOpen={false} />

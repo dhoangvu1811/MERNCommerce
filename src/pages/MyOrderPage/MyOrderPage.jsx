@@ -17,15 +17,16 @@ const MyOrderPage = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [stateIdOrder, setStateIdOrder] = useState('');
+    const [stateOrder, setStateOrder] = useState({});
 
     // Hàm lấy thông tin order
-    const handleGetDetailsOrder = async (id, access_token) => {
+    const handleGetAllOrder = async (id, access_token) => {
         const res = await OrderService.getAllOrder(id, access_token);
         return res;
     };
     const queryOrder = useQuery({
         queryKey: ['userOrder'],
-        queryFn: () => handleGetDetailsOrder(user?.id, user?.access_token),
+        queryFn: () => handleGetAllOrder(user?.id, user?.access_token),
         //ép kiểu boolean
         enabled: !!(user?.id && user?.access_token),
     });
@@ -33,8 +34,13 @@ const MyOrderPage = () => {
 
     // Hàm huỷ đơn hàng
     const mutationCancelOrder = useMutationHook((data) => {
-        const { idOrder, token, idUser } = data;
-        const res = OrderService.cancelOrder(idOrder, token, idUser);
+        const { idOrder, token, idUser, orderItems } = data;
+        const res = OrderService.cancelOrder(
+            idOrder,
+            token,
+            idUser,
+            orderItems
+        );
         return res;
     });
     const {
@@ -46,17 +52,18 @@ const MyOrderPage = () => {
         failureCount: failureCountCancelOrder,
     } = mutationCancelOrder;
 
-    const showModal = (idOrder) => {
+    const showModal = (idOrder, order) => {
         setIsModalOpen(true);
         setStateIdOrder(idOrder);
+        setStateOrder(order);
     };
-
     const handleOk = () => {
         mutationCancelOrder.mutate(
             {
                 idOrder: stateIdOrder,
                 token: user?.access_token,
                 idUser: user?.id,
+                orderItems: stateOrder?.orderItems,
             },
             {
                 onSettled: () => {
@@ -187,7 +194,7 @@ const MyOrderPage = () => {
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <DeleteOutlined
                             style={{ cursor: 'pointer' }}
-                            onClick={() => showModal(order?._id)}
+                            onClick={() => showModal(order?._id, order)}
                         />
                         <InfoCircleFilled
                             style={{ cursor: 'pointer' }}

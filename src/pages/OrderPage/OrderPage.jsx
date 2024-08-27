@@ -105,13 +105,17 @@ const OrderPage = () => {
         }
     }, [isSuccessUpdate, isErrorUpdate]);
 
-    const handleChangeCount = (type, idProduct) => {
+    const handleChangeCount = (type, idProduct, limit) => {
         switch (type) {
             case 'increase':
-                dispatch(increaseAmount({ idProduct: idProduct }));
+                if (limit) {
+                    dispatch(increaseAmount({ idProduct: idProduct }));
+                }
                 break;
             case 'decrease':
-                dispatch(decreaseAmount({ idProduct: idProduct }));
+                if (!limit) {
+                    dispatch(decreaseAmount({ idProduct: idProduct }));
+                }
                 break;
             default:
                 return;
@@ -208,7 +212,11 @@ const OrderPage = () => {
                     <WrapperCountOrder>
                         <WrapperBtnQualityProduct
                             onClick={() =>
-                                handleChangeCount('decrease', order?.product)
+                                handleChangeCount(
+                                    'decrease',
+                                    order?.product,
+                                    order?.amount === 1
+                                )
                             }
                             icon={<MinusOutlined color='#000' />}
                         />
@@ -218,7 +226,11 @@ const OrderPage = () => {
                         ></WrapperInputNumber>
                         <WrapperBtnQualityProduct
                             onClick={() =>
-                                handleChangeCount('increase', order?.product)
+                                handleChangeCount(
+                                    'increase',
+                                    order?.product,
+                                    order?.countInStock !== order?.amount
+                                )
                             }
                             icon={<PlusOutlined color='#000' />}
                         />

@@ -77,6 +77,7 @@ const ProductDetailComponent = ({ idProduct }) => {
                         price: productDetail?.price,
                         product: productDetail?._id,
                         discount: productDetail?.discount,
+                        countInStock: productDetail?.countInStock,
                     },
                 })
             );
