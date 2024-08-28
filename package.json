@@ -56,5 +56,6 @@
             "last 1 safari version"
         ]
     },
-    "proxy": "http://localhost:3001"
+  
+    "proxy": "https://project-ecommercebackend-v1-0.onrender.com"
 }

@@ -4,18 +4,13 @@ import {
     WrapperButton,
     WrapperButtonComponent,
     WrapperContainer,
-    WrapperContainerLeft,
-    WrapperContainerRight,
     WrapperForm,
     WrapperInfield,
-    WrapperMessageERR,
     WrapperOverlay,
     WrapperOverlayBtn,
     WrapperOverlayContainer,
     WrapperOverlayLeft,
-    WrapperOverlayPanel,
     WrapperOverlayRight,
-    WrapperSignIn,
     WrappersignInContainer,
     WrappersignUpContainer,
     WrapperSocialContainer,
@@ -76,6 +71,11 @@ const SignInPage = () => {
                 'access_token',
                 JSON.stringify(dataSignIn?.access_token)
             );
+            // Lưu refresh_token vào localStorage
+            localStorage.setItem(
+                'refresh_token',
+                JSON.stringify(dataSignIn?.refresh_token)
+            );
             if (dataSignIn?.access_token) {
                 // giải mã token
                 const decoded = jwtDecode(dataSignIn?.access_token);
@@ -91,8 +91,16 @@ const SignInPage = () => {
 
     // Hàm lấy thông tin user
     const handleGetDetailsUser = async (id, access_token) => {
+        const storageRefreshToken = localStorage.getItem('refresh_token');
+        const refreshToken = JSON.parse(storageRefreshToken);
         const res = await UserService.getDetailsUser(id, access_token);
-        dispatch(updateUser({ ...res?.data, access_token: access_token }));
+        dispatch(
+            updateUser({
+                ...res?.data,
+                access_token: access_token,
+                refresh_token: refreshToken,
+            })
+        );
     };
 
     const handleOnChangeEmailSignIn = (e) => {

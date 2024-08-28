@@ -34,11 +34,14 @@ export const getDetailsUser = async (id, access_token) => {
 };
 
 //tạo mới access token từ refresh token
-export const refreshToken = async () => {
+export const refreshToken = async (refreshToken) => {
     const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/user/refresh-token`,
+        {},
         {
-            withCredentials: true,
+            headers: {
+                token: `Bearer ${refreshToken}`,
+            },
         }
     );
     return res.data;
