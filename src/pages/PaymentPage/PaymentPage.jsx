@@ -248,7 +248,6 @@ const PaymentPage = () => {
                 ),
             };
         });
-    let totalPaypal = sumtotal + valueShipping;
 
     const handleChangeInfo = (action) => {
         if (action === 'changeInfo') {
@@ -274,6 +273,7 @@ const PaymentPage = () => {
                 totalPrice: sumtotal + valueShipping,
                 user: user?.id,
                 id: user?.id,
+                email: user?.email,
             });
         }
     };
@@ -332,10 +332,12 @@ const PaymentPage = () => {
             user: user?.id,
             id: user?.id,
             ispaid: true,
+            email: user?.email,
         });
         // console.log('Transaction completed by ', details);
         // console.log('data', data);
     };
+    let totalPaypal = sumtotal + valueShipping;
     return (
         <>
             {contextHolder}

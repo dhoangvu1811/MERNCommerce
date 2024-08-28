@@ -7,7 +7,7 @@ const ProductDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     return (
-        <div style={{ height: '100vh', width: '100%', background: '#efefef' }}>
+        <div style={{ width: '100%', background: '#efefef' }}>
             <div
                 style={{
                     width: '1270px',
