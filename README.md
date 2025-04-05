@@ -1,4 +1,4 @@
-# Dự án MERN-tttt
+# Dự án MERNCommerce
 
 Dự án này là một ứng dụng MERN stack được xây dựng bằng Create React App. Nó cung cấp nhiều tính năng để quản lý sản phẩm, đơn hàng, người dùng và nhiều hơn nữa.
 
@@ -32,7 +32,7 @@ Dự án này là một ứng dụng MERN stack được xây dựng bằng Crea
    ```
 2. Di chuyển vào thư mục dự án:
    ```bash
-   cd ProjectMERN-tttt
+   cd MERNCommerce
    ```
 3. Cài đặt các phụ thuộc:
    ```bash
