@@ -1,70 +1,71 @@
-# Getting Started with Create React App
+# Dự án MERN-tttt
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Dự án này là một ứng dụng MERN stack được xây dựng bằng Create React App. Nó cung cấp nhiều tính năng để quản lý sản phẩm, đơn hàng, người dùng và nhiều hơn nữa.
 
-## Available Scripts
+## Tính năng
 
-In the project directory, you can run:
+1. **Trang chủ**: Trang landing chính của ứng dụng.
+2. **Quản lý đơn hàng**: Các trang để đặt hàng và xem chi tiết đơn hàng.
+3. **Quản lý sản phẩm**: Các trang để liệt kê sản phẩm, xem chi tiết sản phẩm và lọc theo loại sản phẩm.
+4. **Xác thực người dùng**: Trang đăng nhập cho người dùng.
+5. **Hồ sơ người dùng**: Trang hồ sơ để người dùng quản lý thông tin cá nhân.
+6. **Bảng điều khiển quản trị**: Các trang dành riêng cho quản trị viên để quản lý đơn hàng, sản phẩm và người dùng.
+7. **Hệ thống thanh toán**: Trang thanh toán và xác nhận đơn hàng thành công.
+8. **Xử lý lỗi**: Trang không tìm thấy cho các đường dẫn không hợp lệ.
+9. **Thành phần tái sử dụng**: Các thành phần như nút, modal, bảng, biểu đồ để đảm bảo giao diện nhất quán.
+10. **Custom Hooks**: Các hooks cho debounce và xử lý mutation.
+11. **Tích hợp Redux**: Quản lý trạng thái bằng Redux.
+12. **Dịch vụ API**: Các dịch vụ API cho đơn hàng, thanh toán, sản phẩm và người dùng.
 
-### `npm start`
+## Bắt đầu
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Yêu cầu
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Node.js (v14 hoặc cao hơn)
+- npm (v6 hoặc cao hơn)
 
-### `npm test`
+### Cài đặt
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone repository:
+   ```bash
+   git clone <repository-url>
+   ```
+2. Di chuyển vào thư mục dự án:
+   ```bash
+   cd ProjectMERN-tttt
+   ```
+3. Cài đặt các phụ thuộc:
+   ```bash
+   npm install
+   ```
 
-### `npm run build`
+### Chạy dự án
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Khởi động server phát triển:
+   ```bash
+   npm start
+   ```
+2. Mở [http://localhost:3000](http://localhost:3000) trên trình duyệt để xem ứng dụng.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Chạy kiểm tra
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Khởi động trình kiểm tra ở chế độ xem tương tác:
 
-### `npm run eject`
+```bash
+npm test
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Build cho sản xuất
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Build ứng dụng cho môi trường sản xuất:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm run build
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Các file build sẽ được lưu trong thư mục `build/`.
 
-## Learn More
+## Tìm hiểu thêm
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [Tài liệu React](https://reactjs.org/)
+- [Tài liệu Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
